@@ -193,6 +193,11 @@ rule-providers:
     path: './rules/Direct.yaml'
     url: 'https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Tool/Clash/Rule/Direct.yaml'
 
+  MyDirect:
+    <<: *RuleProviders
+    path: './rules/DIRECT.yaml'
+    url: 'https://raw.githubusercontent.com/YoYOxiaoshenke/clash-config/refs/heads/main/DIRECT.yaml'
+
   Proxy:
     <<: *RuleProviders
     path: './rules/Proxy.yaml'
@@ -241,7 +246,7 @@ rule-providers:
   Emby:
     <<: *RuleProviders
     path: './rules/Emby.yaml'
-    url: 'https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Tool/Clash/Rule/EmbyServer.yaml'
+    url: 'https://raw.githubusercontent.com/YoYOxiaoshenke/clash-config/refs/heads/main/Emby.yaml'
 
   iCloudChina:
     <<: *RuleProviders
@@ -297,6 +302,7 @@ rule-providers:
 rules:
   - RULE-SET, Lan, DIRECT
   - RULE-SET, Direct, DIRECT
+  - RULE-SET, MyDirect, DIRECT
   - RULE-SET, Proxy, 兜底策略
   - RULE-SET, ChinaDownloadCDN, DIRECT
   - RULE-SET, InternationalDownloadCDN, 境外下载
