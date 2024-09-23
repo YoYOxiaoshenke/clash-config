@@ -1,8 +1,4 @@
-port: 8080
-socks-port: 1080
-mixed-port: 7890
-redir-port: 7891
-tproxy-port: 7892
+# https://wiki.metacubex.one/example/geox
 
 # url 里填写自己的订阅,名称不能重复
 proxy-providers:
@@ -14,68 +10,44 @@ proxy-providers:
     override:
       additional-prefix: "[provider1]"
 
-  # provider2:
-  #   url: ""
-  #   type: http
-  #   interval: 86400
-  #   health-check: {enable: true,url: "https://www.gstatic.com/generate_204",interval: 300}
-  #   override:
-  #     additional-prefix: "[provider2]"
+  provider2:
+    url: ""
+    type: http
+    interval: 86400
+    health-check: {enable: true,url: "https://www.gstatic.com/generate_204",interval: 300}
+    override:
+      additional-prefix: "[provider2]"
 
+proxies: 
+  - name: "直连"
+    type: direct
+    udp: true
 
+mixed-port: 7890
+ipv6: true
 allow-lan: true
-mode: rule
-log-level: warning
-# 缓解移动设备耗电问题
-# https://github.com/vernesong/OpenClash/issues/2614
-keep-alive-interval: 1800
-# 进程匹配模式
-# off 不匹配进程，推荐在路由器上使用此模式
-find-process-mode: off
-ipv6: false
 unified-delay: false
 tcp-concurrent: true
-global-client-fingerprint: chrome
-
-
-secret: 123456
+external-controller: 127.0.0.1:9090
 external-ui: ui
-external-ui-name: yacd
-external-controller: 0.0.0.0:9090
-external-ui-url: https://mirror.ghproxy.com/https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip
-
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 geodata-mode: true
-# memconservative: 专为内存受限 (小内存) 设备优化的加载器 (默认值), standard: 标准加载器
-# geodata-loader: standard
-geo-auto-update: true
-geo-update-interval: 8
-# 可莉
-#geox-url:
-  # geoip: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat'
-  # geosite: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geosite.dat'
-  # mmdb: 'https://gitlab.com/Masaiki/GeoIP2-CN/-/raw/release/Country.mmdb'
-  # asn: 'https://gitlab.com/Loon0x00/loon_data/-/raw/main/geo/GeoLite2-ASN.mmdb'
-# 官方  
 geox-url:
   geoip: "https://mirror.ghproxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
   geosite: "https://mirror.ghproxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
   mmdb: "https://mirror.ghproxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
   asn: "https://mirror.ghproxy.com/https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
 
+find-process-mode: strict
+global-client-fingerprint: chrome
 
 profile:
-  # 储存 API 对策略组的选择，以供下次启动时使用
   store-selected: true
-  # 储存 fakeip 映射表，域名再次发生连接时，使用原有映射地址
   store-fake-ip: true
-
 
 sniffer:
   enable: true
-  force-dns-mapping: true
-  parse-pure-ip: true
-  override-destination: true
   sniff:
     HTTP:
       ports: [80, 8080-8880]
@@ -84,34 +56,25 @@ sniffer:
       ports: [443, 8443]
     QUIC:
       ports: [443, 8443]
-  force-domain:
-    - +.v2ex.com
   skip-domain:
-    - Mijia Cloud
+    - "Mijia Cloud"
     - "+.push.apple.com"
 
-
 tun:
-  enable: false
-  stack: system
+  enable: true
+  stack: mixed
   dns-hijack:
-    - any:53
+    - "any:53"
     - "tcp://any:53"
   auto-route: true
-  # https://wiki.metacubex.one/config/inbound/tun/#auto-redirect
-  #auto-redirect: true
+  auto-redirect: true
   auto-detect-interface: true
-  device: utun0
-
 
 dns:
   enable: true
   ipv6: true
-  listen: 0.0.0.0:1053
-  enhanced-mode: fake-ip
-  fake-ip-range: 28.0.0.1/8
-  # 遵守规则
   respect-rules: true
+  enhanced-mode: fake-ip
   fake-ip-filter:
     - "*"
     - "+.lan"
@@ -131,61 +94,55 @@ dns:
       - "https://dns.cloudflare.com/dns-query"
       - "https://dns.google/dns-query"
 
-
-proxies: 
-  - name: "直连"
-    type: direct
-    udp: true
-
 proxy-groups:
 
   - name: 默认
     type: select
-    proxies: [香港,新加坡,全部节点，直连]
+    proxies: [自动选择,直连,香港,台湾,日本,新加坡,美国,其它地区,全部节点]
 
   - name: Google
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: Telegram
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: Twitter
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: 哔哩哔哩
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: 巴哈姆特
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: YouTube
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: NETFLIX
     type: select
-    proxies: [默认,香港,新加坡,全部节点,直连]
+    proxies: [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: Spotify
     type: select
-    proxies:  [默认,香港,新加坡,全部节点,直连]
+    proxies:  [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: Github
     type: select
-    proxies:  [默认,香港,新加坡,全部节点,直连]
+    proxies:  [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   - name: 国内
     type: select
-    proxies:  [直连,默认,香港,新加坡,全部节点]
+    proxies:  [直连,默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择]
 
   - name: 其他
     type: select
-    proxies:  [默认,香港,新加坡,全部节点,直连]
+    proxies:  [默认,香港,台湾,日本,新加坡,美国,其它地区,全部节点,自动选择,直连]
 
   #分隔,下面是地区分组
   - name: 香港
@@ -193,19 +150,41 @@ proxy-groups:
     include-all: true
     filter: "(?i)港|hk|hongkong|hong kong"
 
+  - name: 台湾
+    type: select
+    include-all: true
+    filter: "(?i)台|tw|taiwan"
+
+  - name: 日本
+    type: select
+    include-all: true
+    filter: "(?i)日|jp|japan"
+
+  - name: 美国
+    type: select
+    include-all: true
+    filter: "(?i)美|us|unitedstates|united states"
+
   - name: 新加坡
     type: select
     include-all: true
     filter: "(?i)(新|sg|singapore)"
 
+  - name: 其它地区
+    type: select
+    include-all: true
+    filter: "(?i)^(?!.*(?:🇭🇰|🇯🇵|🇺🇸|🇸🇬|🇨🇳|港|hk|hongkong|台|tw|taiwan|日|jp|japan|新|sg|singapore|美|us|unitedstates)).*"
+
   - name: 全部节点
     type: select
     include-all: true
 
+  - name: 自动选择
+    type: url-test
+    include-all: true
+    tolerance: 10
+
 rules:
-  - DOMAIN-KEYWORD,qznovelvod,直连
-  - DOMAIN-SUFFIX,emby.wtf,直连
-  - DOMAIN-SUFFIX,misakaf.org,直连
   - GEOIP,lan,直连,no-resolve
   - GEOSITE,github,Github
   - GEOSITE,twitter,Twitter
