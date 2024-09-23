@@ -141,7 +141,7 @@ proxy-groups:
 
   - name: 默认
     type: select
-    proxies: [香港,新加坡,全部节点，直连]
+    proxies: [香港,新加坡,全部节点,直连]
 
   - name: Google
     type: select
