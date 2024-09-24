@@ -141,8 +141,8 @@ proxy-groups:
   - {name: AI, type: select, include-all-providers: true, filter: *FilterAll, proxies: [新国策略]}
   - {name: TikTok, type: select, include-all-providers: true, filter: *FilterAll, proxies: [新国策略]}
   - {name: Microsoft, type: select, proxies: [🟢 直连, 香港策略, 新国策略]}
-  - {name: Telegram, type: select, proxies:[新国策略, 香港策略]}
-  - {name: PAYPAL, type: select, proxies:[新国策略, 香港策略]}
+  - {name: Telegram, type: select, proxies: [新国策略, 香港策略]}
+  - {name: PAYPAL, type: select, proxies: [新国策略, 香港策略]}
 
 
   - {name: 香港策略, type: select, proxies: [⏱香港时延优选策略组, 🚥香港故障转移策略组]}
