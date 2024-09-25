@@ -5,6 +5,7 @@ NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, 
 proxy-providers: 
   机场1:
     url: ''
+    #exclude-filter: "剩余流量|重置|到期|中转"
     <<: *NodeParam
     override:
       additional-prefix: "[机场1] " # 为订阅节点添加机场名称前缀
