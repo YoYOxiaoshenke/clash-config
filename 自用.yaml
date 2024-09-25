@@ -102,7 +102,7 @@ dns:
   respect-rules: true
   fake-ip-filter-mode: blacklist
   fake-ip-filter:
-    - rule-set:private_domain
+    - rule-set:fakeip-filter
   nameserver:
     - https://120.53.53.53/dns-query
     - https://223.5.5.5/dns-query
@@ -153,21 +153,15 @@ rules:
   - DOMAIN-SUFFIX,misakaf.org,🟢 直连
   
   - RULE-SET,private_domain,🟢 直连
-  - RULE-SET,telegram_domain,Telegram
-  - RULE-SET,onedrive_domain,Microsoft
   - RULE-SET,microsoft_domain,Microsoft
   - RULE-SET,apple_domain,🟢 直连
-  - RULE-SET,speedtest_domain,手动选择
   - RULE-SET,ai,AI
   - RULE-SET,tiktok_domain,TikTok
   - RULE-SET,download,下载
-  - RULE-SET,steamcn_domain,🟢 直连
-  - RULE-SET,geolocation-!cn,手动选择
+  - RULE-SET,proxy_domain,手动选择
   - RULE-SET,cn_domain,🟢 直连
 
-  - RULE-SET,google_ip,手动选择,no-resolve
   - RULE-SET,telegram_ip,Telegram,no-resolve
-  - RULE-SET,twitter_ip,手动选择,no-resolve
   - RULE-SET,cn_ip,🟢 直连
   - MATCH,手动选择
 
@@ -175,25 +169,19 @@ rule-anchor:
   ip: &ip {type: http, interval: 43200, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 43200, behavior: domain, format: mrs}
   domain2: &domain2 {type: http, interval: 43200, behavior: domain, format: text}
-  class: &class {type: http, interval: 43200, behavior: classical, format: yaml}
 
 
 rule-providers:
-  ai: { <<: *class, url: "https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Tool/Clash/Rule/AI.yaml" }
+  ai: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/ai.mrs" }
+  fakeip-filter: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/fakeip-filter.mrs" }
   download: { <<: *domain2, url: "https://ruleset.skk.moe/Clash/domainset/download.txt" }
-  private_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs" }
-  apple_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs" }
-  telegram_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs" }
-  onedrive_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs" }
-  microsoft_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs" }
-  speedtest_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs" }
-  tiktok_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs" }
-  steamcn_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam%40cn.mrs" }
-  geolocation-!cn: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs" }
-  cn_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs" }
+  private_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/private.mrs" }
+  apple_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/apple-cn.mrs" }
+  microsoft_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/microsoft-cn.mrs" }
+  tiktok_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/tiktok.mrs" }
+  proxy_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/proxy.mrs" }
+  cn_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/cn.mrs" }
 
-  private_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs" }
-  cn_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs" }
-  google_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs" }
-  telegram_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs" }
-  twitter_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/twitter.mrs" }
+  private_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/privateip.mrs" }
+  telegram_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/telegramip.mrs" }
+  cn_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/cnip.mrs" }
