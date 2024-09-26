@@ -286,7 +286,7 @@ rule-providers:
 
 # 规则指向
 rules:
-  - RULE-SET, Lan, DIRECT
+  - RULE-SET, Lan, DIRECT, ,no-resolve
   - RULE-SET, Direct, DIRECT
   - RULE-SET, Proxy, 兜底策略
   - RULE-SET, ChinaDownloadCDN, DIRECT
@@ -305,7 +305,7 @@ rules:
   - RULE-SET, AppStore, App Store
   - RULE-SET, 1Password, 1Password
   - RULE-SET, Microsoft, Microsoft
-  - RULE-SET, Google, 兜底策略
+  - RULE-SET, Google, 兜底策略 ,no-resolve
   - RULE-SET, Telegram, Telegram
   - RULE-SET, ESET_China, DIRECT
   - GEOIP, CN, DIRECT
