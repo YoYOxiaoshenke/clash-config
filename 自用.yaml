@@ -152,11 +152,12 @@ rules:
   - RULE-SET,private_ip,🟢 直连,no-resolve
 # 手写
   - DOMAIN-SUFFIX,emby.wtf,🟢 直连
+  - DOMAIN-SUFFIX,koyso.com,🟢 直连
   - DOMAIN-SUFFIX,misakaf.org,🟢 直连
 # domain
   - RULE-SET,private_domain,🟢 直连
   - RULE-SET,apple_domain,🟢 直连
-  - RULE-SET,ai,AI
+  - RULE-SET,ai_domain,AI
   - RULE-SET,tiktok_domain,TikTok
   - RULE-SET,microsoft_domain,Microsoft
   - RULE-SET,download,下载
@@ -175,11 +176,11 @@ rule-anchor:
 
 rule-providers:
   private_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/privateip.mrs" }
-# domain
   fakeip-filter: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/fakeip-filter.mrs" }
+# domain
   private_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/private.mrs" }
   apple_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/apple-cn.mrs" }
-  ai: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/ai.mrs" }
+  ai_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/ai.mrs" }
   tiktok_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/tiktok.mrs" }
   microsoft_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/microsoft-cn.mrs" }
   download: { <<: *domain2, url: "https://ruleset.skk.moe/Clash/domainset/download.txt" }
