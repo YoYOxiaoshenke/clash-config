@@ -17,7 +17,7 @@ redir-port: 7893
 tproxy-port: 7894
 allow-lan: true
 mode: rule
-log-level: debug
+log-level: silent
 keep-alive-interval: 1800
 find-process-mode: off
 ipv6: true
@@ -29,10 +29,6 @@ external-ui: ui
 external-ui-name: xd
 external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-geodata-mode: false
-geodata-loader: standard
-geo-auto-update: false
-geo-update-interval: 24
 profile:
   store-selected: true
   store-fake-ip: true
@@ -96,47 +92,47 @@ FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|�
 UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 30, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 FallBack: &FallBack {type: fallback, interval: 9, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 proxy-groups:
-  - {name: 🚀 手动选择, type: select, include-all-providers: true, proxies: [香港策略, 新国策略, 台湾策略, 日本策略, 美国策略]}
-  - {name: ⏬低倍节点, type: select, include-all-providers: true, proxies: [🟢 直连]}
-  - {name: AI, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
-  - {name: TikTok, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
-  - {name: Microsoft, type: select, proxies: [🟢 直连, ⏬低倍节点, 🚀 手动选择]}
-  - {name: Telegram, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
-  - {name: 香港策略, type: select, proxies: [⏱️香港时延优选策略组, 🚥香港故障转移策略组]}
-  - {name: 新国策略, type: select, proxies: [⏱️新国时延优选策略组, 🚥新国故障转移策略组]}
-  - {name: 台湾策略, type: select, proxies: [⏱️台湾时延优选策略组, 🚥台湾故障转移策略组]}
-  - {name: 日本策略, type: select, proxies: [⏱️日本时延优选策略组, 🚥日本故障转移策略组]}
-  - {name: 美国策略, type: select, proxies: [⏱️美国时延优选策略组, 🚥美国故障转移策略组]}
-  - {name: ⏱️香港时延优选策略组, <<: *UrlTest, filter: *FilterHK}
-  - {name: ⏱️新国时延优选策略组, <<: *UrlTest, filter: *FilterSG}
-  - {name: ⏱️台湾时延优选策略组, <<: *UrlTest, filter: *FilterTW}
-  - {name: ⏱️日本时延优选策略组, <<: *UrlTest, filter: *FilterJP}
-  - {name: ⏱️美国时延优选策略组, <<: *UrlTest, filter: *FilterUS}
-  - {name: 🚥香港故障转移策略组, <<: *FallBack, filter: *FilterHK}
-  - {name: 🚥新国故障转移策略组, <<: *FallBack, filter: *FilterSG}
-  - {name: 🚥台湾故障转移策略组, <<: *FallBack, filter: *FilterTW}
-  - {name: 🚥日本故障转移策略组, <<: *FallBack, filter: *FilterJP}
-  - {name: 🚥美国故障转移策略组, <<: *FallBack, filter: *FilterUS}
+  - {name: 手动选择, type: select, include-all-providers: true, proxies: [香港策略, 新国策略, 台湾策略, 日本策略, 美国策略]}
+  - {name: 低倍节点, type: select, include-all-providers: true, proxies: [直连]}
+  - {name: AI, type: select, proxies: [新国策略, 台湾策略, 手动选择]}
+  - {name: TikTok, type: select, proxies: [新国策略, 台湾策略, 手动选择]}
+  - {name: Microsoft, type: select, proxies: [直连, 低倍节点, 手动选择]}
+  - {name: Telegram, type: select, proxies: [新国策略, 台湾策略, 手动选择]}
+  - {name: 香港策略, type: select, proxies: [香港时延优选策略组, 香港故障转移策略组]}
+  - {name: 新国策略, type: select, proxies: [新国时延优选策略组, 新国故障转移策略组]}
+  - {name: 台湾策略, type: select, proxies: [台湾时延优选策略组, 台湾故障转移策略组]}
+  - {name: 日本策略, type: select, proxies: [日本时延优选策略组, 日本故障转移策略组]}
+  - {name: 美国策略, type: select, proxies: [美国时延优选策略组, 美国故障转移策略组]}
+  - {name: 香港时延优选策略组, <<: *UrlTest, filter: *FilterHK}
+  - {name: 新国时延优选策略组, <<: *UrlTest, filter: *FilterSG}
+  - {name: 台湾时延优选策略组, <<: *UrlTest, filter: *FilterTW}
+  - {name: 日本时延优选策略组, <<: *UrlTest, filter: *FilterJP}
+  - {name: 美国时延优选策略组, <<: *UrlTest, filter: *FilterUS}
+  - {name: 香港故障转移策略组, <<: *FallBack, filter: *FilterHK}
+  - {name: 新国故障转移策略组, <<: *FallBack, filter: *FilterSG}
+  - {name: 台湾故障转移策略组, <<: *FallBack, filter: *FilterTW}
+  - {name: 日本故障转移策略组, <<: *FallBack, filter: *FilterJP}
+  - {name: 美国故障转移策略组, <<: *FallBack, filter: *FilterUS}
 proxies: 
-  - name: "🟢 直连"
+  - name: "直连"
     type: direct
     udp: true
 rules:
-  - RULE-SET,private_ip,🟢 直连,no-resolve
-  - DOMAIN-SUFFIX,emby.wtf,⏬低倍节点
-  - DOMAIN-SUFFIX,koyso.com,⏬低倍节点
-  - DOMAIN-SUFFIX,misakaf.org,⏬低倍节点
-  - RULE-SET,private_domain,🟢 直连
-  - RULE-SET,apple_domain,🟢 直连
+  - RULE-SET,private_ip,直连,no-resolve
+  - DOMAIN-SUFFIX,emby.wtf,低倍节点
+  - DOMAIN-SUFFIX,koyso.com,低倍节点
+  - DOMAIN-SUFFIX,misakaf.org,低倍节点
+  - RULE-SET,private_domain,直连
+  - RULE-SET,apple_domain,直连
   - RULE-SET,ai_domain,AI
   - RULE-SET,tiktok_domain,TikTok
   - RULE-SET,microsoft_domain,Microsoft
-  - RULE-SET,download,⏬低倍节点
-  - RULE-SET,proxy_domain,🚀 手动选择
-  - RULE-SET,cn_domain,🟢 直连
+  - RULE-SET,download,低倍节点
+  - RULE-SET,proxy_domain,手动选择
+  - RULE-SET,cn_domain,直连
   - RULE-SET,telegram_ip,Telegram,no-resolve
-  - RULE-SET,cn_ip,🟢 直连
-  - MATCH,🚀 手动选择
+  - RULE-SET,cn_ip,直连
+  - MATCH,手动选择
 rule-anchor:
   ip: &ip {type: http, interval: 43200, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 43200, behavior: domain, format: mrs}
