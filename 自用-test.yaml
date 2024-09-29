@@ -1,70 +1,96 @@
-# 锚点 - 节点订阅的参数 [每小时更新一次订阅节点，每 300 秒一次健康检查]
-NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://cp.cloudflare.com', interval: 300}}
+# 锚点 - 节点订阅的参数 [每小时更新一次订阅节点，每 6 秒一次健康检查]
+NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://cp.cloudflare.com', interval: 6}}
 
+# 锚点 - 节点订阅
 proxy-providers: 
-  TKV:
+  main:
     url: ''
+    #exclude-filter: "剩余流量|重置|到期|中转"
     <<: *NodeParam
     override:
-      additional-prefix: "[TKV] "
-  xflash:
+      additional-prefix: "[main] " # 为订阅节点添加机场名称前缀
+  reserve:
     url: ''
+    #filter: "进阶IEPL"
     <<: *NodeParam
     override:
-      additional-prefix: "[xflash] "
+      additional-prefix: "[reserve] " # 为订阅节点添加机场名称前缀
 
-port: 8080
-socks-port: 1080
+
 mixed-port: 7890
-redir-port: 7891
-tproxy-port: 7892
+port: 7891
+socks-port: 7892
+redir-port: 7893
+tproxy-port: 7894
+
 
 allow-lan: true
 mode: rule
-log-level: warning
+# 日志等级 silent/error/warning/info/debug
+log-level: debug
+# 缓解移动设备耗电问题
+# https://github.com/vernesong/OpenClash/issues/2614
 keep-alive-interval: 1800
+# 进程匹配模式
+# always 开启，强制匹配所有进程
+# strict 默认，由 Clash 判断是否开启
+# off 不匹配进程，推荐在路由器上使用此模式
 find-process-mode: off
 ipv6: true
-unified-delay: false
+# 除去握手延迟
+unified-delay: true
 tcp-concurrent: true
 global-client-fingerprint: chrome
+
 
 secret: 123456
 external-ui: ui
 external-ui-name: xd
-external-controller: 0.0.0.0:9090
+external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
+
 geodata-mode: false
-geo-auto-update: false
-geo-update-interval: 24
+# standard 标准/ memconservative 内存受限(小内存)设备优化的加载器(默认值)
+geodata-loader: standard
+geo-auto-update: false # 是否自动更新 geodata
+geo-update-interval: 24 # 更新间隔，单位：小时
 ##geox-url:
+  ## geoip: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat'
+  ## geosite: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geosite.dat'
   ## mmdb: 'https://gitlab.com/Masaiki/GeoIP2-CN/-/raw/release/Country.mmdb'
   ## asn: 'https://gitlab.com/Loon0x00/loon_data/-/raw/main/geo/GeoLite2-ASN.mmdb'
 
+
 profile:
+  # 储存 API 对策略组的选择，以供下次启动时使用
   store-selected: true
+  # 储存 fakeip 映射表，域名再次发生连接时，使用原有映射地址
   store-fake-ip: true
+
 
 tun:
   enable: false
-  stack: system
+  stack: mixed
   dns-hijack:
     - any:53
     - "tcp://any:53"
   auto-route: true
+  # https://wiki.metacubex.one/config/inbound/tun/#auto-redirect
   auto-redirect: true
   auto-detect-interface: true
   device: utun0
+
 
 sniffer:
   enable: true
   force-dns-mapping: true
   parse-pure-ip: true
-  override-destination: false
+  override-destination: true
   sniff:
     HTTP:
       ports: [80, 8080-8880]
+      override-destination: true
     TLS:
       ports: [443, 8443]
     QUIC:
@@ -74,14 +100,15 @@ sniffer:
     - "dlg.io.mi.com"
     - "+.push.apple.com"
 
+
 dns:
   enable: true
   ipv6: true
   prefer-h3: true # 是否开启 DoH 支持 HTTP/3，将并发尝试
   listen: 0.0.0.0:1053
-  enhanced-mode: fake-ip
+  enhanced-mode: fake-ip # or redir-host
   fake-ip-range: 28.0.0.1/8
-  fake-ip-filter:
+  fake-ip-filter: # 不走fake-ip列表
     - rule-set:fakeip-filter
     - rule-set:private_domain
   default-nameserver:
@@ -96,42 +123,58 @@ dns:
       - https://120.53.53.53/dns-query
   nameserver:
     - https://cloudflare-dns.com/dns-query#h3=true
-    - https://8.8.8.8/dns-query
+    - https://dns.google/dns-query
+
 
 hosts:
   # 修复美团APPbug
   '^http(s)?:\/\/(.*).d.meituan.net': 'http$1://$2.dreport.meituan.net'
 
+
 # 锚点 - 节点筛选组
 FilterHK: &FilterHK '^(?=.*((?i)🇭🇰|香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
 FilterSG: &FilterSG '^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
+FilterTW: &FilterTW '^(?=.*((?i)🇹🇼|台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
+FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
+FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
 
-# 锚点 - 时延优选参数 [每 300 秒一次惰性健康检查，容差 25ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-UrlTest: &UrlTest {type: url-test, interval: 300, tolerance: 25, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
-# 锚点 - 故障转移参数 [每 300 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-FallBack: &FallBack {type: fallback, interval: 300, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+# 策略组参数锚点
+# 锚点 - 时延优选参数 [每 9 秒一次惰性健康检查，容差 30ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
+UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 30, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+# 锚点 - 故障转移参数 [每 9 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
+FallBack: &FallBack {type: fallback, interval: 9, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+
+proxy-groups:
+  - {name: 🚀 手动选择, type: select, include-all-providers: true, proxies: [香港策略, 新国策略, 台湾策略, 日本策略, 美国策略]}
+  - {name: ⏬低倍节点, type: select, include-all-providers: true, proxies: [🟢 直连]}
+  - {name: AI, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
+  - {name: TikTok, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
+  - {name: Microsoft, type: select, proxies: [🟢 直连, ⏬低倍节点, 🚀 手动选择]}
+  - {name: Telegram, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
+# 策略组
+  - {name: 香港策略, type: select, proxies: [⏱️香港时延优选策略组, 🚥香港故障转移策略组]}
+  - {name: 新国策略, type: select, proxies: [⏱️新国时延优选策略组, 🚥新国故障转移策略组]}
+  - {name: 台湾策略, type: select, proxies: [⏱️台湾时延优选策略组, 🚥台湾故障转移策略组]}
+  - {name: 日本策略, type: select, proxies: [⏱️日本时延优选策略组, 🚥日本故障转移策略组]}
+  - {name: 美国策略, type: select, proxies: [⏱️美国时延优选策略组, 🚥美国故障转移策略组]}
+# 时延优选策略组
+  - {name: ⏱️香港时延优选策略组, <<: *UrlTest, filter: *FilterHK}
+  - {name: ⏱️新国时延优选策略组, <<: *UrlTest, filter: *FilterSG}
+  - {name: ⏱️台湾时延优选策略组, <<: *UrlTest, filter: *FilterTW}
+  - {name: ⏱️日本时延优选策略组, <<: *UrlTest, filter: *FilterJP}
+  - {name: ⏱️美国时延优选策略组, <<: *UrlTest, filter: *FilterUS}
+# 故障转移策略组
+  - {name: 🚥香港故障转移策略组, <<: *FallBack, filter: *FilterHK}
+  - {name: 🚥新国故障转移策略组, <<: *FallBack, filter: *FilterSG}
+  - {name: 🚥台湾故障转移策略组, <<: *FallBack, filter: *FilterTW}
+  - {name: 🚥日本故障转移策略组, <<: *FallBack, filter: *FilterJP}
+  - {name: 🚥美国故障转移策略组, <<: *FallBack, filter: *FilterUS}
 
 proxies: 
   - name: "🟢 直连"
     type: direct
     udp: true
 
-proxy-groups:
-  - {name: 🚀 手动选择, type: select, include-all-providers: true, proxies: [🇭🇰香港策略, 🇸🇬新国策略]}
-  - {name: ⏬低倍节点, type: select, include-all-providers: true, proxies: [🟢 直连]}
-  - {name: AI, type: select, proxies: [🇸🇬新国策略, 🚀 手动选择]}
-  - {name: TikTok, type: select, proxies: [🇸🇬新国策略, 🚀 手动选择]}
-  - {name: Microsoft, type: select, proxies: [🟢 直连, ⏬低倍节点, 🚀 手动选择]}
-  - {name: Telegram, type: select, proxies: [🇸🇬新国策略, 🚀 手动选择]}
-# 策略组
-  - {name: 🇭🇰香港策略, type: select, include-all-providers: true, proxies: [⏱️香港时延优选策略组, 🚥香港故障转移策略组], filter: *FilterHK}
-  - {name: 🇸🇬新国策略, type: select, include-all-providers: true, proxies: [⏱️新国时延优选策略组, 🚥新国故障转移策略组], filter: *FilterSG}
-# 时延优选策略组
-  - {name: ⏱️香港时延优选策略组, <<: *UrlTest, filter: *FilterHK}
-  - {name: ⏱️新国时延优选策略组, <<: *UrlTest, filter: *FilterSG}
-# 故障转移策略组
-  - {name: 🚥香港故障转移策略组, <<: *FallBack, filter: *FilterHK}
-  - {name: 🚥新国故障转移策略组, <<: *FallBack, filter: *FilterSG}
 
 rules:
   - RULE-SET,private_ip,🟢 直连,no-resolve
@@ -156,7 +199,7 @@ rules:
 rule-anchor:
   ip: &ip {type: http, interval: 43200, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 43200, behavior: domain, format: mrs}
-  domain2: &domain2 {type: http, interval: 43200, behavior: domain, format: text}
+  domain4t: &domain4t {type: http, interval: 43200, behavior: domain, format: text}
 
 rule-providers:
   private_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/privateip.mrs" }
@@ -167,7 +210,7 @@ rule-providers:
   ai_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/ai.mrs" }
   tiktok_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/tiktok.mrs" }
   microsoft_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/microsoft-cn.mrs" }
-  download: { <<: *domain2, url: "https://ruleset.skk.moe/Clash/domainset/download.txt" }
+  download: { <<: *domain4t, url: "https://ruleset.skk.moe/Clash/domainset/download.txt" }
   proxy_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/proxy.mrs" }
   cn_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/cn.mrs" }
 # ip
