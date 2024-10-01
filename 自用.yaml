@@ -109,7 +109,7 @@ proxy-groups:
   - {name: 台湾故障转移策略组, <<: *FallBack, filter: *FilterTW}
   - {name: 日本故障转移策略组, <<: *FallBack, filter: *FilterJP}
   - {name: 美国故障转移策略组, <<: *FallBack, filter: *FilterUS}
-proxies: 
+proxies:
   - name: "直连"
     type: direct
     udp: true
