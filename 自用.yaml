@@ -1,5 +1,5 @@
 NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://cp.cloudflare.com', interval: 6}}
-proxy-providers: 
+proxy-providers:
   TKV:
     url: ''
     <<: *NodeParam
@@ -21,7 +21,7 @@ tcp-concurrent: true
 global-client-fingerprint: chrome
 secret: 123456
 external-ui: ui
-external-ui-name: xd
+external-ui-name: metacubexd
 external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 profile:
@@ -76,6 +76,7 @@ dns:
       - https://223.5.5.5/dns-query#h3=true
       - https://223.6.6.6/dns-query#h3=true
   nameserver:
+
     - quic://dns.adguard-dns.com
 hosts:
   '^http(s)?:\/\/(.*).d.meituan.net': 'http$1://$2.dreport.meituan.net'
@@ -117,6 +118,7 @@ rules:
   - DOMAIN-SUFFIX,emby.wtf,低倍节点
   - DOMAIN-SUFFIX,koyso.com,低倍节点
   - DOMAIN-SUFFIX,misakaf.org,低倍节点
+  - DOMAIN-SUFFIX,snssdk.com,直连
   - RULE-SET,private_domain,直连
   - RULE-SET,apple_domain,直连
   - RULE-SET,ai_domain,AI
