@@ -2,19 +2,15 @@
 NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://cp.cloudflare.com', interval: 6}}
 
 # 锚点 - 节点订阅
-proxy-providers: 
+proxy-providers:
   main:
     url: ''
     #exclude-filter: "剩余流量|重置|到期|中转"
-    <<: *NodeParam
-    override:
-      additional-prefix: "[main] " # 为订阅节点添加机场名称前缀
-  reserve:
-    url: ''
     #filter: "进阶IEPL"
     <<: *NodeParam
+    path: './proxy_providers/TKV.yaml'
     override:
-      additional-prefix: "[reserve] " # 为订阅节点添加机场名称前缀
+      additional-prefix: "[TKV] " # 为订阅节点添加机场名称前缀
 
 
 mixed-port: 7890
