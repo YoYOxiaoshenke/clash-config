@@ -36,7 +36,8 @@ keep-alive-interval: 1800
 # strict 默认，由 Clash 判断是否开启
 # off 不匹配进程，推荐在路由器上使用此模式
 find-process-mode: off
-ipv6: true
+ipv6: false
+udp: true
 # 除去握手延迟
 unified-delay: true
 tcp-concurrent: true
@@ -48,18 +49,6 @@ external-ui: ui
 external-ui-name: xd
 external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-
-
-geodata-mode: false
-# standard 标准/ memconservative 内存受限(小内存)设备优化的加载器(默认值)
-geodata-loader: standard
-geo-auto-update: false # 是否自动更新 geodata
-geo-update-interval: 24 # 更新间隔，单位：小时
-##geox-url:
-  ## geoip: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat'
-  ## geosite: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geosite.dat'
-  ## mmdb: 'https://gitlab.com/Masaiki/GeoIP2-CN/-/raw/release/Country.mmdb'
-  ## asn: 'https://gitlab.com/Loon0x00/loon_data/-/raw/main/geo/GeoLite2-ASN.mmdb'
 
 
 profile:
@@ -104,27 +93,17 @@ sniffer:
 dns:
   enable: true
   ipv6: true
-  prefer-h3: true # 是否开启 DoH 支持 HTTP/3，将并发尝试
+  #prefer-h3: true # 是否开启 DoH 支持 HTTP/3，将并发尝试
   cache-algorithm: arc # 缓存算法 lru / lfu / arc
   listen: 0.0.0.0:1053
   enhanced-mode: fake-ip # or redir-host
   fake-ip-range: 28.0.0.1/8
   fake-ip-filter: # 不走fake-ip列表
     - rule-set:fakeip-filter
-    - rule-set:private_domain
-  default-nameserver:
-    - 223.5.5.5
-    - 223.6.6.6
-  proxy-server-nameserver:
-    - https://223.5.5.5/dns-query#h3=true
-    - https://223.6.6.6/dns-query#h3=true
-  nameserver-policy:
-    "rule-set:fakeip-filter,private_domain,cn_domain,apple_domain,microsoft_domain,download":
-      - 221.5.203.98
-      - 221.7.92.98
+    - rule-set:lan_non_ip
   nameserver:
-    - https://208.67.222.222/dns-query
-    - https://cloudflare-dns.com/dns-query#h3=true
+    - quic://223.5.5.5:853
+    - quic://223.6.6.6:853
 
 
 hosts:
@@ -140,18 +119,19 @@ FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼�
 FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
 
 # 策略组参数锚点
-# 锚点 - 时延优选参数 [每 9 秒一次惰性健康检查，容差 30ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 30, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+# 锚点 - 时延优选参数 [每 9 秒一次惰性健康检查，容差 20ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
+UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 20, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 # 锚点 - 故障转移参数 [每 9 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
 FallBack: &FallBack {type: fallback, interval: 9, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 
 proxy-groups:
   - {name: 🚀 手动选择, type: select, include-all-providers: true, proxies: [香港策略, 新国策略, 台湾策略, 日本策略, 美国策略]}
-  - {name: ⏬低倍节点, type: select, include-all-providers: true, proxies: [🟢 直连]}
-  - {name: AI, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
-  - {name: TikTok, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
-  - {name: Microsoft, type: select, proxies: [🟢 直连, ⏬低倍节点, 🚀 手动选择]}
-  - {name: Telegram, type: select, proxies: [新国策略, 台湾策略, 🚀 手动选择]}
+  - {name: ⏬低倍节点, type: select, include-all-providers: true, proxies: [🚀 手动选择]}
+  - {name: 国外流媒体, type: select, proxies: [新国策略, 🚀 手动选择]}
+  - {name: AI, type: select, proxies: [新国策略, 🚀 手动选择]}
+  - {name: Telegram, type: select, proxies: [新国策略, 🚀 手动选择]}
+  - {name: Microsoft, type: select, proxies: [🟢 直连, ⏬低倍节点]}
+  - {name: 境外下载, type: select, proxies: [🟢 直连, ⏬低倍节点]}
 # 策略组
   - {name: 香港策略, type: select, proxies: [⏱️香港时延优选策略组, 🚥香港故障转移策略组]}
   - {name: 新国策略, type: select, proxies: [⏱️新国时延优选策略组, 🚥新国故障转移策略组]}
@@ -176,44 +156,194 @@ proxies:
     type: direct
     udp: true
 
+geodata-mode: false
+# standard 标准/ memconservative 内存受限(小内存)设备优化的加载器(默认值)
+geodata-loader: standard
+geo-auto-update: true # 是否自动更新 geodata
+geo-update-interval: 24 # 更新间隔，单位：小时
+geox-url:
+  ## geoip: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat'
+  ## geosite: 'https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geosite.dat'
+  mmdb: 'https://gitlab.com/Masaiki/GeoIP2-CN/-/raw/release/Country.mmdb' # 只包含GEOIP:CN
+  ## asn: 'https://gitlab.com/Loon0x00/loon_data/-/raw/main/geo/GeoLite2-ASN.mmdb'
+
+
+#### 规则集合
+rule-providers:
+  # fake_ip_filter，作用如名！不用于 rules！
+  fakeip-filter:
+    type: http
+    behavior: domain
+    format: text
+    interval: 43200
+    url: https://raw.githubusercontent.com/juewuy/ShellCrash/refs/heads/master/public/fake_ip_filter.list
+    path: ./sukkaw_ruleset/fakeip-filter.list
+  # LAN 域名
+  lan_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/lan.txt
+    path: ./sukkaw_ruleset/lan_non_ip.txt
+  # 静态 CDN 域名（大部分国外流量，可走低倍节点）
+  # 一般正常访问网站、调用 API 接口时，我倾向于使用比较干净的网络出口（例如各个国家的家宽、商宽）避免风控、撞验证码，但是这部分网络出口一般带宽较小；而大部分网站的静态资源（如图片、视频、音频、字体、JS、CSS）都有独立域名、不设置风控措施、不设置鉴权，这些静态资源可以使用 IP 不一定干净（例如 IDC 类 IP）、但是带宽更大、延时更低、而且有和大部分主流 CDN（如 Cloudflare、Akamai、Fastly、EdgeCast）在 IXP 有互联的网络出口
+  # 这两个规则集就是收集了常见的静态资源 CDN 域名。一般就实践经验来看，在正常上网中这部分域名产生的流量占据约 70% 左右。如果你在使用商业性质的远端策略服务提供商、且该服务上提供了低倍率节点，你可以将这部分域名分流至低倍率节点以节省流量。
+  # 需要注意的是，部分海外域名我只收录在了 cdn.conf 中、没有重复收录在 global.conf（后文会介绍）。因此即使没有将 CDN 分流至独立网络出口需求，我也强烈建议使用 domainset/cdn.conf 和 non_ip/cdn.conf
+  cdn_domainset:
+    type: http
+    behavior: domain
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/domainset/cdn.txt
+    path: ./sukkaw_ruleset/cdn_domainset.txt
+  cdn_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/cdn.txt
+    path: ./sukkaw_ruleset/cdn_non_ip.txt
+  # 流媒体域名
+  # 包含 4gtv、AbemaTV、All4、Amazon Prime Video、Apple TV、Apple Music TV、Bahamut、BBC、Bilibili Intl、DAZN、Deezer、Disney+、Discovery+、DMM、encoreTVB、Fox Now、Fox+、HBO GO/Now/Max/Asia、Hulu、HWTV、JOOX、Jwplayer、KKBOX、KKTV、Line TV、Naver TV、myTV Super、Netflix、niconico、Now E、Paramount+、PBS、Peacock、Pandora、PBS、Pornhub、SoundCloud、PBS、Spotify、TaiwanGood、Tiktok Intl、Twitch、ViuTV、ShowTime、iQiYi Global、Himalaya Podcast、Overcast、WeTV 等流媒体平台的规则组。
+  # 其中，stream_[xx].conf 包含 限定地区访问的流媒体（例如 BBC 直播只允许在英国访问）的规则，而 stream.conf 则包含所有流媒体的全部规则。你可以根据自己的需求选择性引用 stream_[xx].conf 规则划分独立策略、并使用 stream.conf 为剩下所有的常用流媒体做兜底。
+  stream_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/stream.txt
+    path: ./sukkaw_ruleset/stream_non_ip.txt
+  # 大部分内容生成式 AI 服务（如 OpenAI 及 ChatGPT、Google Gemini 等）
+  ai_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/ai.txt
+    path: ./sukkaw_ruleset/ai_non_ip.txt
+  # Telegram域名
+  telegram_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
+    path: ./sukkaw_ruleset/telegram_non_ip.txt
+  # 大部分苹果和微软的 CDN 服务（如应用商店下载、操作系统和补丁的更新）都使用了在国内 ICP 备案的域名、并在国内有 CDN 节点。这个规则集就是收集了这些可以使用国内直连访问的域名。
+  # 有的时候，由于新资源（如新版本操作系统或软件刚刚发布）或冷门资源未被国内 CDN 节点缓存、导致国内直连访问缓慢的时候，也可以使用其他策略不通过国内直连访问。
+  apple_cdn:
+    type: http
+    behavior: domain
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/domainset/apple_cdn.txt
+    path: ./sukkaw_ruleset/apple_cdn.txt
+  microsoft_cdn_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
+    path: ./sukkaw_ruleset/microsoft_cdn_non_ip.txt
+  # 云上贵州（icloud.com.cn）和苹果地图国内版等服务的域名，这部分域名需要国内直连访问
+  apple_cn_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/apple_cn.txt
+    path: ./sukkaw_ruleset/apple_cn_non_ip.txt
+  # 排除了有国内 CDN 节点的域名和国区专用域名以后，苹果和微软其余的域名
+  apple_services:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/apple_services.txt
+    path: ./sukkaw_ruleset/apple_services.txt
+  microsoft_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/microsoft.txt
+    path: ./sukkaw_ruleset/microsoft_non_ip.txt
+  # 收集了操作系统、软件、驱动、游戏（例如 Steam 和 Epic）的下载和更新域名，但不包含国内有 CDN 节点的域名（那部分域名已经包括在前文 apple_cdn.conf 和 microsoft_cdn.conf），作用和静态 CDN 规则集类似。
+  # 考虑到大部分操作系统、软件、驱动、游戏的下载域名在国内可达，大家可以根据自身需要、酌情设置 download.conf 走直连，或者在下载开始前手动调整策略
+  download_domainset:
+    type: http
+    behavior: domain
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/domainset/download.txt
+    path: ./sukkaw_ruleset/download_domainset.txt
+  download_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/download.txt
+    path: ./sukkaw_ruleset/download_non_ip.txt
+  # 常见海外服务和互联网公司的域名。其中部分域名被 DNS 污染，将其收录在域名类规则中、配合远端策略可以避免 Surge 在本机解析这些域名、有效避免 DNS 污染和 DNS 泄漏
+  global_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/global.txt
+    path: ./sukkaw_ruleset/global_non_ip.txt
+  # 国内常见域名
+  domestic_non_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/non_ip/domestic.txt
+    path: ./sukkaw_ruleset/domestic_non_ip.txt
+
+
+  lan_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/ip/lan.txt
+    path: ./sukkaw_ruleset/lan_ip.txt
+  stream_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/ip/stream.txt
+    path: ./sukkaw_ruleset/stream_ip.txt
+  telegram_ip:
+    type: http
+    behavior: classical
+    format: text
+    interval: 43200
+    url: https://ruleset.skk.moe/Clash/ip/telegram.txt
+    path: ./sukkaw_ruleset/telegram_ip.txt
 
 rules:
-  - RULE-SET,private_ip,🟢 直连,no-resolve
-# 手写
-  - DOMAIN-SUFFIX,emby.wtf,⏬低倍节点
-  - DOMAIN-SUFFIX,koyso.com,⏬低倍节点
-  - DOMAIN-SUFFIX,misakaf.org,⏬低倍节点
-# domain
-  - RULE-SET,private_domain,🟢 直连
-  - RULE-SET,apple_domain,🟢 直连
-  - RULE-SET,ai_domain,AI
-  - RULE-SET,tiktok_domain,TikTok
-  - RULE-SET,microsoft_domain,Microsoft
-  - RULE-SET,download,⏬低倍节点
-  - RULE-SET,proxy_domain,🚀 手动选择
-  - RULE-SET,cn_domain,🟢 直连
-# ip
-  - RULE-SET,telegram_ip,Telegram,no-resolve
-  - RULE-SET,cn_ip,🟢 直连
-  - MATCH,🚀 手动选择
+  - RULE-SET,lan_non_ip, 🟢 直连
+  - RULE-SET,cdn_domainset, ⏬低倍节点
+  - RULE-SET,cdn_non_ip, ⏬低倍节点
+  - RULE-SET,stream_non_ip, 国外流媒体
+  - RULE-SET,ai_non_ip, AI
+  - RULE-SET,telegram_non_ip, Telegram
+  - RULE-SET,apple_cdn, 🟢 直连
+  - RULE-SET,apple_services, 🟢 直连
+  - RULE-SET,apple_cn_non_ip, 🟢 直连
+  - RULE-SET,microsoft_cdn_non_ip, Microsoft
+  - RULE-SET,microsoft_non_ip, Microsoft
+  - RULE-SET,download_domainset, 境外下载
+  - RULE-SET,download_non_ip, 境外下载
+  - RULE-SET,global_non_ip, 🚀 手动选择
+  - RULE-SET,domestic_non_ip, 🟢 直连
 
-rule-anchor:
-  ip: &ip {type: http, interval: 43200, behavior: ipcidr, format: mrs}
-  domain: &domain {type: http, interval: 43200, behavior: domain, format: mrs}
-  domain4t: &domain4t {type: http, interval: 43200, behavior: domain, format: text}
-
-rule-providers:
-  private_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/privateip.mrs" }
-  fakeip-filter: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/fakeip-filter.mrs" }
-# domain
-  private_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/private.mrs" }
-  apple_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/apple-cn.mrs" }
-  ai_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/ai.mrs" }
-  tiktok_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/tiktok.mrs" }
-  microsoft_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/microsoft-cn.mrs" }
-  download: { <<: *domain4t, url: "https://ruleset.skk.moe/Clash/domainset/download.txt" }
-  proxy_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/proxy.mrs" }
-  cn_domain: { <<: *domain, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/cn.mrs" }
-# ip
-  telegram_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/telegramip.mrs" }
-  cn_ip: { <<: *ip, url: "https://github.com/DustinWin/ruleset_geodata/releases/download/clash-ruleset/cnip.mrs" }
+  - RULE-SET,lan_ip, 🟢 直连, no-resolve
+  - RULE-SET,stream_ip, 国外流媒体, no-resolve
+  - RULE-SET,telegram_ip, Telegram, no-resolve
+  - GEOIP, CN, 🟢 直连
+  - MATCH, 🚀 手动选择
