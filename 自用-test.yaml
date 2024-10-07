@@ -97,6 +97,10 @@ dns:
   fake-ip-filter: # 不走fake-ip列表
     - rule-set:fakeip-filter
     - rule-set:lan_non_ip
+  nameserver-policy:
+    "rule-set:apple_cdn,apple_services,apple_cn_non_ip,domestic_non_ip,download_domainset,download_non_ip,microsoft_cdn_non_ip,microsoft_non_ip":
+      - 221.7.92.98
+      - 221.5.203.98
   nameserver:
     - quic://223.5.5.5:853
     - quic://223.6.6.6:853
@@ -323,6 +327,9 @@ rule-providers:
 
 rules:
   - RULE-SET,lan_non_ip, 🟢 直连
+  - DOMAIN-SUFFIX,emby.wtf, 🟢 直连
+  - DOMAIN-SUFFIX,koyso.com, 🟢 直连
+  - DOMAIN-SUFFIX,misakaf.org, 🟢 直连
   - RULE-SET,cdn_domainset, ⏬低倍节点
   - RULE-SET,cdn_non_ip, ⏬低倍节点
   - RULE-SET,stream_non_ip, 国外流媒体
