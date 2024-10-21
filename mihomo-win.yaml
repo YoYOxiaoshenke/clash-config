@@ -3,14 +3,14 @@ NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, 
 
 # 锚点 - 节点订阅
 proxy-providers:
-  main:
+  XFLASH:
     url: ''
     #exclude-filter: "剩余流量|重置|到期|中转"
-    #filter: "进阶IEPL"
+    #filter: "IEPL"
     <<: *NodeParam
-    path: './proxy_providers/main.yaml'
+    path: './proxy_providers/XFLASH.yaml'
     override:
-      additional-prefix: "[main] " # 为订阅节点添加机场名称前缀
+      additional-prefix: "[XFLASH] "
 
 
 mixed-port: 7890
@@ -20,14 +20,13 @@ redir-port: 7893
 tproxy-port: 7894
 
 
-allow-lan: true
-mode: warning
+allow-lan: false
+mode: rule
 # 日志等级 silent/error/warning/info/debug
-log-level: debug
+log-level: warning
 find-process-mode: strict
 ipv6: true
 udp: true
-# 除去握手延迟
 unified-delay: true
 tcp-concurrent: true
 global-client-fingerprint: chrome
@@ -109,9 +108,9 @@ FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|�
 
 # 策略组参数锚点
 # 锚点 - 时延优选参数 [每 9 秒一次惰性健康检查，容差 20ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 20, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+UrlTest: &UrlTest {type: url-test, interval: 9, tolerance: 20, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 # 锚点 - 故障转移参数 [每 9 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-FallBack: &FallBack {type: fallback, interval: 9, lazy: true, url: 'http://cp.cloudflare.com', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+FallBack: &FallBack {type: fallback, interval: 9, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 
 proxy-groups:
   - {name: 🚀 手动选择, type: select, include-all-providers: true, proxies: [香港策略, 新国策略, 台湾策略, 日本策略, 美国策略]}
