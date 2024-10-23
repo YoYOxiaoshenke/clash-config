@@ -87,7 +87,7 @@ FilterTW: &FilterTW '^(?=.*((?i)🇹🇼|台湾|(\b(TW|Taiwan)\b)))^(?!.*(网站
 FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))^(?!.*(网站|中转|地址|剩余|过期|时间|有效|网址|禁止|邮箱|发布|客服|订阅|节点)).*$'
 
 # 策略组参数锚点
-Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint'}
+Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
 
 proxy-groups: 
   - {name: 🎯 节点选择, type: select, proxies: [🇹🇼 台湾节点, 🇭🇰 香港节点, 🇸🇬 新加坡节点, 🇯🇵 日本节点]}
