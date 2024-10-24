@@ -3,15 +3,15 @@ NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, 
 
 # 锚点 - 节点订阅
 proxy-providers:
-  机场名称:
+  xfltd:
     url: ''
     #exclude-filter: "剩余流量|重置|到期|中转"
     filter: '^(?=.*(.))(?!.*((?i)群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|(\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)\b|(\d{4}-\d{2}-\d{2}|\d+G)))).*$'
     <<: *NodeParam
-    path: './proxy_providers/机场名称.yaml'
+    path: './proxy_providers/xfltd.yaml'
     override:
-      additional-prefix: "[机场名称] "
-
+      additional-prefix: "[xfltd] "
+      skip-cert-verify: true
 
 mixed-port: 7890
 allow-lan: false
@@ -40,7 +40,7 @@ profile:
 
 tun:
   enable: true
-  stack: mixed
+  stack: system
   dns-hijack:
     - any:53
     - "tcp://any:53"
@@ -90,7 +90,7 @@ FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼�
 Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
 
 proxy-groups: 
-  - {name: 🎯 节点选择, type: select, proxies: [🇹🇼 台湾节点, 🇭🇰 香港节点, 🇸🇬 新加坡节点, 🇯🇵 日本节点]}
+  - {name: 🎯 节点选择, type: select, proxies: [🇭🇰 香港节点, 🇹🇼 台湾节点, 🇸🇬 新加坡节点, 🇯🇵 日本节点]}
   - {name: 🤖 解锁服务, type: select, proxies: [🇸🇬 新加坡节点, 🇯🇵 日本节点]}
   - {name: ✈️ CDN, type: select, proxies: [🇭🇰 香港节点, 🇹🇼 台湾节点, 🇸🇬 新加坡节点, 🇯🇵 日本节点]}
   - {name: Ⓜ️ 微软or下载, type: select, proxies: [DIRECT, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇸🇬 新加坡节点, 🇯🇵 日本节点]}
@@ -116,114 +116,114 @@ rule-providers:
   reject_non_ip_drop:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/reject-drop.txt
-    path: ./rule_set/sukkaw_ruleset/reject_non_ip_drop.txt
+    path: ./sukkaw_ruleset/reject_non_ip_drop.txt
   reject_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/reject.txt
-    path: ./rule_set/sukkaw_ruleset/reject_non_ip.txt
+    path: ./sukkaw_ruleset/reject_non_ip.txt
   reject_domainset:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/domainset/reject.txt
-    path: ./rule_set/sukkaw_ruleset/reject_domainset.txt
+    path: ./sukkaw_ruleset/reject_domainset.txt
   # CDN加速（速度快延迟低，大部分流量）
   cdn_domainset:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/domainset/cdn.txt
-    path: ./rule_set/sukkaw_ruleset/cdn_domainset.txt
+    path: ./sukkaw_ruleset/cdn_domainset.txt
   cdn_non_ip:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/non_ip/cdn.txt
-    path: ./rule_set/sukkaw_ruleset/cdn_non_ip.txt
+    path: ./sukkaw_ruleset/cdn_non_ip.txt
   # 流媒体
   stream_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/stream.txt
-    path: ./rule_set/sukkaw_ruleset/stream_non_ip.txt
+    path: ./sukkaw_ruleset/stream_non_ip.txt
   stream_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/ip/stream.txt
-    path: ./rule_set/sukkaw_ruleset/stream_ip.txt
+    path: ./sukkaw_ruleset/stream_ip.txt
   # 解锁服务
   ai_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/ai.txt
-    path: ./rule_set/sukkaw_ruleset/ai_non_ip.txt
+    path: ./sukkaw_ruleset/ai_non_ip.txt
   telegram_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
-    path: ./rule_set/sukkaw_ruleset/telegram_non_ip.txt
+    path: ./sukkaw_ruleset/telegram_non_ip.txt
   telegram_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/ip/telegram.txt
-    path: ./rule_set/sukkaw_ruleset/telegram_ip.txt
+    path: ./sukkaw_ruleset/telegram_ip.txt
   # apple
   apple_cdn:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/domainset/apple_cdn.txt
-    path: ./rule_set/sukkaw_ruleset/apple_cdn.txt
+    path: ./sukkaw_ruleset/apple_cdn.txt
   apple_services:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/apple_services.txt
-    path: ./rule_set/sukkaw_ruleset/apple_services.txt
+    path: ./sukkaw_ruleset/apple_services.txt
   apple_cn_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/apple_cn.txt
-    path: ./rule_set/sukkaw_ruleset/apple_cn_non_ip.txt
+    path: ./sukkaw_ruleset/apple_cn_non_ip.txt
   # 微软
   microsoft_cdn_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
-    path: ./rule_set/sukkaw_ruleset/microsoft_cdn_non_ip.txt
+    path: ./sukkaw_ruleset/microsoft_cdn_non_ip.txt
   microsoft_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/microsoft.txt
-    path: ./rule_set/sukkaw_ruleset/microsoft_non_ip.txt
+    path: ./sukkaw_ruleset/microsoft_non_ip.txt
   # 软件更新、操作系统等大文件下载
   download_domainset:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/domainset/download.txt
-    path: ./rule_set/sukkaw_ruleset/download_domainset.txt
+    path: ./sukkaw_ruleset/download_domainset.txt
   download_non_ip:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/non_ip/download.txt
-    path: ./rule_set/sukkaw_ruleset/download_non_ip.txt
+    path: ./sukkaw_ruleset/download_non_ip.txt
   # 内网域名和局域网 IP
   lan_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/lan.txt
-    path: ./rule_set/sukkaw_ruleset/lan_non_ip.txt
+    path: ./sukkaw_ruleset/lan_non_ip.txt
   lan_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/ip/lan.txt
-    path: ./rule_set/sukkaw_ruleset/lan_ip.txt
+    path: ./sukkaw_ruleset/lan_ip.txt
   # 大陆域名
   domestic_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/domestic.txt
-    path: ./rule_set/sukkaw_ruleset/domestic_non_ip.txt
+    path: ./sukkaw_ruleset/domestic_non_ip.txt
   # 直连服务
   direct_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/direct.txt
-    path: ./rule_set/sukkaw_ruleset/direct_non_ip.txt
+    path: ./sukkaw_ruleset/direct_non_ip.txt
   # 环大陆服务
   global_non_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/non_ip/global.txt
-    path: ./rule_set/sukkaw_ruleset/global_non_ip.txt
+    path: ./sukkaw_ruleset/global_non_ip.txt
   # 国内ip
   domestic_ip:
     <<: *RuleSet_classical
     url: https://ruleset.skk.moe/Clash/ip/domestic.txt
-    path: ./rule_set/sukkaw_ruleset/domestic_ip.txt
+    path: ./sukkaw_ruleset/domestic_ip.txt
   china_ip:
     <<: *RuleSet_ipcidr
     url: https://ruleset.skk.moe/Clash/ip/china_ip.txt
-    path: ./rule_set/sukkaw_ruleset/china_ip.txt
+    path: ./sukkaw_ruleset/china_ip.txt
   china_ip_ipv6:
     <<: *RuleSet_ipcidr
     url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
-    path: ./rule_set/sukkaw_ruleset/china_ip_ipv6.txt
+    path: ./sukkaw_ruleset/china_ip_ipv6.txt
 
 rules:
   - DOMAIN-SUFFIX,emby.wtf,DIRECT
