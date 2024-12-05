@@ -1,0 +1,253 @@
+# [端口设置]
+port: 8890                # HTTP   端口
+socks-port: 8891          # SOCKS  端口
+redir-port: 8892          # REDIR  端口
+mixed-port: 8893          # MIXED  端口
+tproxy-port: 8894         # TPROXY 端口
+
+# [通用设置]
+allow-lan: true           # 允许LAN
+tcp-concurrent: true      # TCP并发
+unified-delay: true       # 统一延迟
+ipv6: true                # 启用IPv6
+find-process-mode: strict # 进程匹配模式
+mode: rule                # 运行模式
+log-level: silent         # 日志级别 silent/error/warning/info/debug
+global-client-fingerprint: chrome
+
+# [面板设置]
+secret: 123456
+external-ui: ui
+external-ui-name: xd
+external-controller: 127.0.0.1:9090
+external-ui-url: "https://ghp.ci/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+
+# [缓存设置]
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# [TUN设置]
+tun:
+  enable: false
+  stack: system
+  dns-hijack:
+    - any:53
+    - "tcp://any:53"
+  auto-route: true
+  auto-detect-interface: true
+  device: utun0
+
+# [DNS设置]
+dns:
+  enable: true
+  ipv6: true
+  listen: 0.0.0.0:1053
+  enhanced-mode: redir-host
+  default-nameserver:
+    - 223.5.5.5
+    - 221.5.203.98
+  nameserver:
+    - https://doh.pub/dns-query#ecs=221.5.203.98/24&ecs-override=true
+    - https://dns.alidns.com/dns-query#ecs=221.5.203.98/24&ecs-override=true
+
+# [嗅探设置]
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: true
+  sniff:
+    HTTP:
+      ports: [80,8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443,8443]
+    QUIC:
+      ports: [443,8443]
+  skip-domain:
+    - "Mijia Cloud"
+
+# [代理订阅]
+proxy-providers:
+  机场1:
+    <<: *NodeParam
+    url: "订阅链接"
+    filter: '过滤条件'
+    path: ./Server/机场1.yaml
+    override:
+      additional-prefix: "[前缀] "
+      skip-cert-verify: true
+
+# [策略组]
+proxy-groups: 
+  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
+  - {name: AI, type: select, proxies: [时延优选策略组-美国, 策略组-美国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-香港, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-香港, 策略组-日本], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  # 地区分类
+  - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
+  - {name: 策略组-台湾, <<: *Select, filter: *FilterTW, icon: *ImgTW}
+  - {name: 策略组-日本, <<: *Select, filter: *FilterJP, icon: *ImgJP}
+  - {name: 策略组-新国, <<: *Select, filter: *FilterSG, icon: *ImgSG}
+  - {name: 策略组-美国, <<: *Select, filter: *FilterUS, icon: *ImgUS}
+  # 自动选择-已隐藏
+  - {name: 时延优选策略组-香港, <<: *UrlTest, filter: *FilterHK}
+  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: *FilterTW}
+  - {name: 时延优选策略组-日本, <<: *UrlTest, filter: *FilterJP}
+  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: *FilterSG}
+  - {name: 时延优选策略组-美国, <<: *UrlTest, filter: *FilterUS}
+
+# [本地规则]
+rules:
+  - DOMAIN-SUFFIX,emby.wtf,DIRECT
+  - DOMAIN-SUFFIX,koyso.com,DIRECT
+  - DOMAIN-SUFFIX,misakaf.org,DIRECT
+  ### 非 IP 类规则
+  - RULE-SET,cdn_domainset, CDN
+  - RULE-SET,cdn_non_ip, CDN
+  - RULE-SET,stream_non_ip, 国际媒体
+  - RULE-SET,telegram_non_ip, Telegram
+  - RULE-SET,apple_cdn, DIRECT
+  - RULE-SET,download_domainset, 微软&下载
+  - RULE-SET,download_non_ip, 微软&下载
+  - RULE-SET,microsoft_cdn_non_ip, 微软&下载
+  - RULE-SET,apple_cn_non_ip,DIRECT  
+  - RULE-SET,apple_services,DIRECT
+  - RULE-SET,microsoft_non_ip, 微软&下载
+  - RULE-SET,ai_non_ip, AI
+  - RULE-SET,global_non_ip, Bypass
+  - RULE-SET,domestic_non_ip,DIRECT
+  - RULE-SET,direct_non_ip,DIRECT
+  - RULE-SET,lan_non_ip,DIRECT
+  ### IP 类规则
+  - RULE-SET,telegram_ip, Telegram
+  - RULE-SET,stream_ip, 国际媒体
+  - RULE-SET,domestic_ip,DIRECT
+  - RULE-SET,lan_ip,DIRECT
+  - RULE-SET,china_ip,DIRECT
+  - RULE-SET,china_ip_ipv6,DIRECT
+  - MATCH, Bypass
+
+# [远程规则]
+rule-providers:
+# CDN加速（速度快延迟低，大部分流量）
+  cdn_domainset:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/domainset/cdn.txt
+    path: ./sukkaw_ruleset/cdn_domainset.txt
+  cdn_non_ip:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/non_ip/cdn.txt
+    path: ./sukkaw_ruleset/cdn_non_ip.txt
+  # 流媒体
+  stream_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/stream.txt
+    path: ./sukkaw_ruleset/stream_non_ip.txt
+  stream_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/ip/stream.txt
+    path: ./sukkaw_ruleset/stream_ip.txt
+  # AI
+  ai_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/ai.txt
+    path: ./sukkaw_ruleset/ai_non_ip.txt
+  # Telegram
+  telegram_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/telegram.txt
+    path: ./sukkaw_ruleset/telegram_non_ip.txt
+  telegram_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/ip/telegram.txt
+    path: ./sukkaw_ruleset/telegram_ip.txt
+  # apple
+  apple_cdn:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/domainset/apple_cdn.txt
+    path: ./sukkaw_ruleset/apple_cdn.txt
+  apple_services:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/apple_services.txt
+    path: ./sukkaw_ruleset/apple_services.txt
+  apple_cn_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/apple_cn.txt
+    path: ./sukkaw_ruleset/apple_cn_non_ip.txt
+  # 微软
+  microsoft_cdn_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
+    path: ./sukkaw_ruleset/microsoft_cdn_non_ip.txt
+  microsoft_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/microsoft.txt
+    path: ./sukkaw_ruleset/microsoft_non_ip.txt
+  # 软件更新、操作系统等大文件下载
+  download_domainset:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/domainset/download.txt
+    path: ./sukkaw_ruleset/download_domainset.txt
+  download_non_ip:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/non_ip/download.txt
+    path: ./sukkaw_ruleset/download_non_ip.txt
+  # 内网域名和局域网 IP
+  lan_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/lan.txt
+    path: ./sukkaw_ruleset/lan_non_ip.txt
+  lan_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/ip/lan.txt
+    path: ./sukkaw_ruleset/lan_ip.txt
+  # 大陆域名
+  domestic_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/domestic.txt
+    path: ./sukkaw_ruleset/domestic_non_ip.txt
+  # 直连服务
+  direct_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/direct.txt
+    path: ./sukkaw_ruleset/direct_non_ip.txt
+  # 环大陆服务
+  global_non_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/non_ip/global.txt
+    path: ./sukkaw_ruleset/global_non_ip.txt
+  # 国内ip
+  domestic_ip:
+    <<: *RuleSet_classical
+    url: https://ruleset.skk.moe/Clash/ip/domestic.txt
+    path: ./sukkaw_ruleset/domestic_ip.txt
+  china_ip:
+    <<: *RuleSet_ipcidr
+    url: https://ruleset.skk.moe/Clash/ip/china_ip.txt
+    path: ./sukkaw_ruleset/china_ip.txt
+  china_ip_ipv6:
+    <<: *RuleSet_ipcidr
+    url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
+    path: ./sukkaw_ruleset/china_ip_ipv6.txt
+
+# [锚点集合]
+ImgHK: &ImgHK 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
+ImgTW: &ImgTW 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'
+ImgJP: &ImgJP 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png'
+ImgSG: &ImgSG 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'
+ImgUS: &ImgUS 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'
+FilterHK: &FilterHK '^(?=.*((?i)🇭🇰|香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterTW: &FilterTW '^(?=.*((?i)🇹🇼|台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterSG: &FilterSG '^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 1800, timeout: 2000}}
+Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
+UrlTest: &UrlTest {type: url-test, interval: 60, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 25200, format: text, proxy: DIRECT}
+RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 25200, format: text, proxy: DIRECT}
+RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 25200, format: text, proxy: DIRECT}
