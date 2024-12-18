@@ -1,6 +1,6 @@
 # [端口设置]
 port: 8890                # HTTP   端口
-socks-port: 8891          # SOCKS  端口
+socks-port: 8891          # SOCKS  端口 使用 socks5 时，请将代理设置为socks5h://ip:port而非socks5://ip:port
 redir-port: 8892          # REDIR  端口
 mixed-port: 8893          # MIXED  端口
 tproxy-port: 8894         # TPROXY 端口
@@ -9,10 +9,11 @@ tproxy-port: 8894         # TPROXY 端口
 allow-lan: true           # 允许LAN
 tcp-concurrent: true      # TCP并发
 unified-delay: true       # 统一延迟
-ipv6: true                # 启用IPv6
+ipv6: false                # 启用IPv6
 find-process-mode: strict # 进程匹配模式
 mode: rule                # 运行模式
-log-level: warning         # 日志级别 silent/error/warning/info/debug
+log-level: warning        # 日志级别 silent/error/warning/info/debug
+keep-alive-interval: 600  # 解决iOS设备耗电问题
 global-client-fingerprint: chrome
 
 # [面板设置]
@@ -41,15 +42,15 @@ tun:
 # [DNS设置]
 dns:
   enable: true
-  ipv6: true
+  ipv6: false
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
-    - 223.5.5.5
-    - 221.5.203.98
+    - 221.7.92.98
+    - 223.6.6.6
   nameserver:
-    - https://doh.pub/dns-query#ecs=221.5.203.98/24&ecs-override=true
-    - https://dns.alidns.com/dns-query#ecs=221.5.203.98/24&ecs-override=true
+    - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
+    - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
 
 # [嗅探设置]
 sniffer:
@@ -66,7 +67,7 @@ sniffer:
     QUIC:
       ports: [443,8443]
   skip-domain:
-    - "Mijia Cloud"
+    - Mijia Cloud
 
 # [锚点集合]
 ImgHK: &ImgHK 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
@@ -100,10 +101,10 @@ proxy-providers:
 # [策略组]
 proxy-groups: 
   - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
-  - {name: AI, type: select, proxies: [时延优选策略组-美国, 策略组-美国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  - {name: AI, type: select, proxies: [策略组-美国, 时延优选策略组-美国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
   - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
   - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-香港, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
   - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-香港, 策略组-日本], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
   # 地区分类
   - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
@@ -122,7 +123,6 @@ proxy-groups:
 rules:
   - DOMAIN-SUFFIX,emby.wtf,DIRECT
   - DOMAIN-SUFFIX,koyso.com,DIRECT
-  - DOMAIN-SUFFIX,misakaf.org,DIRECT
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
@@ -146,7 +146,7 @@ rules:
   - RULE-SET,domestic_ip,DIRECT
   - RULE-SET,lan_ip,DIRECT
   - RULE-SET,china_ip,DIRECT
-  - RULE-SET,china_ip_ipv6,DIRECT
+  # - RULE-SET,china_ip_ipv6,DIRECT
   - MATCH, Bypass
 
 # [远程规则]
@@ -247,7 +247,7 @@ rule-providers:
     <<: *RuleSet_ipcidr
     url: https://ruleset.skk.moe/Clash/ip/china_ip.txt
     path: ./sukkaw_ruleset/china_ip.txt
-  china_ip_ipv6:
-    <<: *RuleSet_ipcidr
-    url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
-    path: ./sukkaw_ruleset/china_ip_ipv6.txt
+  # china_ip_ipv6:
+  #   <<: *RuleSet_ipcidr
+  #   url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
+  #   path: ./sukkaw_ruleset/china_ip_ipv6.txt
