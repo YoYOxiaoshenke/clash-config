@@ -60,12 +60,12 @@ sniffer:
   override-destination: true
   sniff:
     HTTP:
-      ports: [80,8080-8880]
+      ports: [80, 8080-8880]
       override-destination: true
     TLS:
-      ports: [443,8443]
+      ports: [443, 8443]
     QUIC:
-      ports: [443,8443]
+      ports: [443, 8443]
   skip-domain:
     - Mijia Cloud
 
@@ -75,11 +75,11 @@ ImgTW: &ImgTW 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/maste
 ImgJP: &ImgJP 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png'
 ImgSG: &ImgSG 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'
 ImgUS: &ImgUS 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'
-FilterHK: &FilterHK '^(?=.*((?i)🇭🇰|香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterTW: &FilterTW '^(?=.*((?i)🇹🇼|台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterJP: &FilterJP '^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterSG: &FilterSG '^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterHK: &FilterHK '^(?=.*((?i)香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterTW: &FilterTW '^(?=.*((?i)台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterJP: &FilterJP '^(?=.*((?i)日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterSG: &FilterSG '^(?=.*((?i)新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
+FilterUS: &FilterUS '^(?=.*((?i)美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
 NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 1800, timeout: 2000}}
 Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
 UrlTest: &UrlTest {type: url-test, interval: 60, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
@@ -132,7 +132,7 @@ rules:
   - RULE-SET,download_domainset, 微软&下载
   - RULE-SET,download_non_ip, 微软&下载
   - RULE-SET,microsoft_cdn_non_ip, 微软&下载
-  - RULE-SET,apple_cn_non_ip,DIRECT  
+  - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,DIRECT
   - RULE-SET,microsoft_non_ip, 微软&下载
   - RULE-SET,ai_non_ip, AI
@@ -151,7 +151,7 @@ rules:
 
 # [远程规则]
 rule-providers:
-# CDN加速（速度快延迟低，大部分流量）
+  # CDN加速（速度快延迟低，大部分流量）
   cdn_domainset:
     <<: *RuleSet_domain
     url: https://ruleset.skk.moe/Clash/domainset/cdn.txt
