@@ -14,7 +14,7 @@ fi
 # get branch/arch
 arch="$DISTRIB_ARCH"
 branch=
-if [[ "$DISTRIB_RELEASE" == *"23.05"* ]]; then
+if [true]; then
 	branch="openwrt-23.05"
 elif [[ "$DISTRIB_RELEASE" == *"24.10"* ]]; then
 	branch="openwrt-24.10"
