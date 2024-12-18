@@ -21,7 +21,7 @@ secret: 123456
 external-ui: ui
 external-ui-name: xd
 external-controller: 127.0.0.1:9090
-external-ui-url: "https://ghp.ci/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 # [缓存设置]
 profile:
@@ -70,11 +70,11 @@ sniffer:
     - Mijia Cloud
 
 # [锚点集合]
-ImgHK: &ImgHK 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
-ImgTW: &ImgTW 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'
-ImgJP: &ImgJP 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png'
-ImgSG: &ImgSG 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'
-ImgUS: &ImgUS 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'
+ImgHK: &ImgHK 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
+ImgTW: &ImgTW 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'
+ImgJP: &ImgJP 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png'
+ImgSG: &ImgSG 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'
+ImgUS: &ImgUS 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'
 FilterHK: &FilterHK '^(?=.*((?i)香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
 FilterTW: &FilterTW '^(?=.*((?i)台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
 FilterJP: &FilterJP '^(?=.*((?i)日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
@@ -99,13 +99,13 @@ proxy-providers:
       skip-cert-verify: true
 
 # [策略组]
-proxy-groups: 
-  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
-  - {name: AI, type: select, proxies: [策略组-美国, 时延优选策略组-美国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
-  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-香港, 策略组-日本], icon: 'https://ghp.ci/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+proxy-groups:
+  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
+  - {name: AI, type: select, proxies: [策略组-美国, 时延优选策略组-美国], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-香港, 策略组-日本], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
   # 地区分类
   - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
   - {name: 策略组-台湾, <<: *Select, filter: *FilterTW, icon: *ImgTW}
