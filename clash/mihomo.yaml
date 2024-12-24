@@ -100,12 +100,13 @@ proxy-providers:
 
 # [策略组]
 proxy-groups:
-  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
-  - {name: AI, type: select, proxies: [策略组-美国, 时延优选策略组-美国], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
-  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-香港], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-香港, 策略组-日本], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
+  - {name: AI, type: select, proxies: [时延优选策略组-美国, 策略组-美国, 策略组-日本, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: 手动选择, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
   # 地区分类
   - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
   - {name: 策略组-台湾, <<: *Select, filter: *FilterTW, icon: *ImgTW}
