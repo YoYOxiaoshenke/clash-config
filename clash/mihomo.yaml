@@ -9,7 +9,7 @@ tproxy-port: 8894         # TPROXY 端口
 allow-lan: true           # 允许LAN
 tcp-concurrent: true      # TCP并发
 unified-delay: true       # 统一延迟
-ipv6: false                # 启用IPv6
+ipv6: true                # 启用IPv6
 find-process-mode: strict # 进程匹配模式
 mode: rule                # 运行模式
 log-level: warning        # 日志级别 silent/error/warning/info/debug
@@ -42,12 +42,11 @@ tun:
 # [DNS设置]
 dns:
   enable: true
-  ipv6: false
+  ipv6: true
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
     - 221.7.92.98
-    - 223.6.6.6
   nameserver:
     - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
     - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
@@ -105,7 +104,7 @@ proxy-groups:
   - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
   - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
   - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: 微软&下载, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: 微软&下载&emby, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
   - {name: 手动选择, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
   # 地区分类
   - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
@@ -122,7 +121,6 @@ proxy-groups:
 
 # [本地规则]
 rules:
-  - DOMAIN-SUFFIX,emby.wtf,DIRECT
   - DOMAIN-SUFFIX,koyso.com,DIRECT
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
@@ -130,12 +128,13 @@ rules:
   - RULE-SET,stream_non_ip, 国际媒体
   - RULE-SET,telegram_non_ip, Telegram
   - RULE-SET,apple_cdn, DIRECT
-  - RULE-SET,download_domainset, 微软&下载
-  - RULE-SET,download_non_ip, 微软&下载
-  - RULE-SET,microsoft_cdn_non_ip, 微软&下载
+  - RULE-SET,emby, 微软&下载&emby
+  - RULE-SET,download_domainset, 微软&下载&emby
+  - RULE-SET,download_non_ip, 微软&下载&emby
+  - RULE-SET,microsoft_cdn_non_ip, 微软&下载&emby
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,DIRECT
-  - RULE-SET,microsoft_non_ip, 微软&下载
+  - RULE-SET,microsoft_non_ip, 微软&下载&emby
   - RULE-SET,ai_non_ip, AI
   - RULE-SET,global_non_ip, Bypass
   - RULE-SET,domestic_non_ip,DIRECT
@@ -147,11 +146,16 @@ rules:
   - RULE-SET,domestic_ip,DIRECT
   - RULE-SET,lan_ip,DIRECT
   - RULE-SET,china_ip,DIRECT
-  # - RULE-SET,china_ip_ipv6,DIRECT
+  - RULE-SET,china_ip_ipv6,DIRECT
   - MATCH, Bypass
 
 # [远程规则]
 rule-providers:
+  # emby
+  emby:
+    <<: *RuleSet_classical
+    url: https://raw.githubusercontent.com/Repcz/Tool/refs/heads/X/Loon/Rules/Emby.list
+    path: ./sukkaw_ruleset/emby.txt
   # CDN加速（速度快延迟低，大部分流量）
   cdn_domainset:
     <<: *RuleSet_domain
@@ -248,7 +252,7 @@ rule-providers:
     <<: *RuleSet_ipcidr
     url: https://ruleset.skk.moe/Clash/ip/china_ip.txt
     path: ./sukkaw_ruleset/china_ip.txt
-  # china_ip_ipv6:
-  #   <<: *RuleSet_ipcidr
-  #   url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
-  #   path: ./sukkaw_ruleset/china_ip_ipv6.txt
+  china_ip_ipv6:
+    <<: *RuleSet_ipcidr
+    url: https://ruleset.skk.moe/Clash/ip/china_ip_ipv6.txt
+    path: ./sukkaw_ruleset/china_ip_ipv6.txt
