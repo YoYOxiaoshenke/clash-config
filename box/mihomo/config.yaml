@@ -1,26 +1,25 @@
 # [端口设置]
 # port: 7890
 # socks-port: 7891
-# mixed-port: 7890
-redir-port: 9797
-tproxy-port: 9898
+mixed-port: 7890
+redir-port: 7891
+tproxy-port: 1536
 
 # [通用设置]
 allow-lan: true           # 允许LAN
 tcp-concurrent: true      # TCP并发
 unified-delay: false      # 统一延迟
-ipv6: true                # 启用IPv6
+ipv6: false               # 启用IPv6
 find-process-mode: strict # 进程匹配模式
 mode: global              # 运行模式
 log-level: silent         # 日志级别 silent/error/warning/info/debug
 global-client-fingerprint: chrome
-bind-address: "*"
 
 # [面板设置]
 secret: 123456
-external-ui: /data/adb/box/clash/dashboard
+external-ui: ui
 external-controller: 0.0.0.0:9091
-# external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 # [缓存设置]
 profile:
@@ -36,12 +35,12 @@ tun:
     - "tcp://any:53"
   auto-route: true
   auto-detect-interface: true
-  device: utun0
+  device: tun0
 
 # [DNS设置]
 dns:
   enable: true
-  ipv6: true
+  ipv6: false
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
@@ -62,7 +61,7 @@ sniffer:
     QUIC:
       ports: [443, 8443]
 
-NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 1800, timeout: 2000}}
+NodeParam: &NodeParam {type: http, interval: 25200, health-check: {enable: true, url: 'http://wifi.vivo.com.cn/generate_204', interval: 3600, timeout: 2000}}
 # [代理订阅]
 proxy-providers:
   cloud:
