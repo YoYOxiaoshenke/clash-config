@@ -12,8 +12,8 @@ unified-delay: true       # 统一延迟
 ipv6: true                # 启用IPv6
 find-process-mode: strict # 进程匹配模式
 mode: rule                # 运行模式
-log-level: warning        # 日志级别 silent/error/warning/info/debug
-keep-alive-interval: 600  # 解决iOS设备耗电问题
+log-level: silent         # 日志级别 silent/error/warning/info/debug
+keep-alive-interval: 1800 # 解决iOS设备耗电问题
 global-client-fingerprint: chrome
 
 # [面板设置]
@@ -26,7 +26,7 @@ external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-
 # [缓存设置]
 profile:
   store-selected: true
-  store-fake-ip: true
+  store-fake-ip: false
 
 # [TUN设置]
 tun:
@@ -46,7 +46,7 @@ dns:
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
-    - 221.7.92.98
+    - 223.6.6.6
   nameserver:
     - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
     - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
@@ -67,6 +67,7 @@ sniffer:
       ports: [443, 8443]
   skip-domain:
     - Mijia Cloud
+    - +.apple.com
 
 # [锚点集合]
 ImgHK: &ImgHK 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
