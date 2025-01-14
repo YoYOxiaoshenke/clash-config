@@ -1,0 +1,105 @@
+# [端口设置]
+# port: 7890
+# socks-port: 7891
+# mixed-port: 7890
+redir-port: 9797
+tproxy-port: 9898
+
+# [通用设置]
+allow-lan: true           # 允许LAN
+tcp-concurrent: true      # TCP并发
+unified-delay: false      # 统一延迟
+ipv6: true                # 启用IPv6
+find-process-mode: strict # 进程匹配模式
+mode: global              # 运行模式
+log-level: silent         # 日志级别 silent/error/warning/info/debug
+global-client-fingerprint: chrome
+bind-address: "*"
+
+# [面板设置]
+secret: 123456
+external-ui: /data/adb/box/clash/dashboard
+external-controller: 0.0.0.0:9091
+# external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+
+# [缓存设置]
+profile:
+  store-selected: true
+  store-fake-ip: false
+
+# [TUN设置]
+tun:
+  enable: false
+  stack: system
+  dns-hijack:
+    - any:53
+    - "tcp://any:53"
+  auto-route: true
+  auto-detect-interface: true
+  device: utun0
+
+# [DNS设置]
+dns:
+  enable: true
+  ipv6: true
+  listen: 0.0.0.0:1053
+  enhanced-mode: redir-host
+  default-nameserver:
+    - 223.6.6.6
+  nameserver:
+    - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
+    - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
+
+# [嗅探设置]
+sniffer:
+  enable: false
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+
+NodeParam: &NodeParam {type: http, interval: 3600, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 1800, timeout: 2000}}
+# [代理订阅]
+proxy-providers:
+  cloud:
+    <<: *NodeParam
+    url: "订阅链接"
+    path: ./provide/cloud.yaml
+    override:
+      skip-cert-verify: true
+
+# [节点]
+proxies:
+- name: "home-direct"
+  type: vmess
+  server: 地址
+  port: 端口
+  udp: true
+  uuid: 填写uuid
+  alterId: 0
+  cipher: none
+  packet-encoding: packetaddr
+  global-padding: false
+  authenticated-length: false
+  tls: false
+  network: ws
+  ws-opts:
+    path: 
+    headers:
+      Host: 混淆地址
+    max-early-data:
+    early-data-header-name:
+    v2ray-http-upgrade: false
+    v2ray-http-upgrade-fast-open: false
+
+# [策略组]
+proxy-groups:
+  - {name: Bypass, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
+
+# [本地规则]
+rules:
+  - MATCH, Bypass
