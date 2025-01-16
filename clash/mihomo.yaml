@@ -19,37 +19,39 @@ global-client-fingerprint: chrome
 # [面板设置]
 secret: 123456
 external-ui: ui
-external-ui-name: xd
 external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 # [缓存设置]
 profile:
-  store-selected: true
-  store-fake-ip: false
+  store-selected: true # 节点选择
+  store-fake-ip: false # fake-ip
 
 # [TUN设置]
 tun:
   enable: false
-  stack: system
+  stack: system # system/gvisor/mixed
+  auto-route: true
+  auto-redirect: true # Android中需要使用:https://github.com/Mygod/VPNHotspot/releases
+  auto-detect-interface: true
   dns-hijack:
     - any:53
-    - "tcp://any:53"
-  auto-route: true
-  auto-detect-interface: true
+    - tcp://any:53
   device: utun0
+  strict-route: true
 
 # [DNS设置]
 dns:
   enable: true
   ipv6: true
+  prefer-h3: true
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
     - 223.6.6.6
   nameserver:
-    - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
-    - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
+    - https://doh.pub/dns-query#h3=true
+    - https://dns.alidns.com/dns-query#h3=true
 
 # [嗅探设置]
 sniffer:
