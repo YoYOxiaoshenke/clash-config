@@ -44,14 +44,13 @@ tun:
 dns:
   enable: true
   ipv6: true
-  prefer-h3: true
   listen: 0.0.0.0:1053
   enhanced-mode: redir-host
   default-nameserver:
     - 223.6.6.6
   nameserver:
-    - https://doh.pub/dns-query#h3=true
-    - https://dns.alidns.com/dns-query#h3=true
+    - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
+    - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
 
 # [嗅探设置]
 sniffer:

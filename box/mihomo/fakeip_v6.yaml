@@ -1,53 +1,50 @@
-mixed-port: 7890
-redir-port: 7891
-tproxy-port: 1536
-ipv6: true
-allow-lan: true
-unified-delay: false
-tcp-concurrent: true
-log-level: silent         # 日志级别 silent/error/warning/info/debug
-find-process-mode: strict # always/off/strict
-mode: global              # 运行模式
+# [端口设置]
+port: 8890                # HTTP   端口
+socks-port: 8891          # SOCKS  端口 使用 socks5 时，请将代理设置为socks5h://ip:port而非socks5://ip:port
+redir-port: 7891          # REDIR  端口
+mixed-port: 7890          # MIXED  端口
+tproxy-port: 1536         # TPROXY 端口
 
-secret: 123456
-external-controller: 0.0.0.0:9091
+# [通用设置]
+allow-lan: true           # 允许LAN
+tcp-concurrent: true      # TCP并发
+unified-delay: true       # 统一延迟
+ipv6: true                # 启用IPv6
+find-process-mode: strict # 进程匹配模式
+mode: global              # 运行模式
+log-level: warning        # 日志级别 silent/error/warning/info/debug
+keep-alive-interval: 1800 # 解决iOS设备耗电问题
+global-client-fingerprint: chrome
+
+# [面板设置]
+secret: 990917
 external-ui: ui
+external-controller: 0.0.0.0:9091
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
+# [缓存设置]
 profile:
-  store-selected: true
-  store-fake-ip: true
+  store-selected: true # 节点选择
+  store-fake-ip: true  # fake-ip
 
-sniffer:
-  enable: false
-  sniff:
-    HTTP:
-      ports: [80, 8080-8880]
-      override-destination: true
-    TLS:
-      ports: [443, 8443]
-    QUIC:
-      ports: [443, 8443]
-  skip-domain:
-    - "Mijia Cloud"
-    - "+.push.apple.com"
-
+# [TUN设置]
 tun:
   enable: false
-  stack: system
-  device: tun0
-  dns-hijack:
-    - "any:53"
-    - "tcp://any:53"
+  stack: system # system/gvisor/mixed
   auto-route: true
-  auto-redirect: false
+  auto-redirect: true # Android中需要使用:https://github.com/Mygod/VPNHotspot/releases
   auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  device: utun0
+  strict-route: true
 
+# [DNS设置]
 dns:
   enable: true
-  listen: 0.0.0.0:1053
   ipv6: true
-  respect-rules: true
+  listen: 0.0.0.0:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.0/15
   fake-ip-filter:
@@ -56,17 +53,17 @@ dns:
     - "+.local"
     - "+.market.xiaomi.com"
   default-nameserver:
-    - https://120.53.53.53/dns-query
-    - https://223.5.5.5/dns-query
-  proxy-server-nameserver:
-    - https://120.53.53.53/dns-query
-    - https://223.5.5.5/dns-query
+    - 223.6.6.6
   nameserver:
     - https://doh.pub/dns-query#ecs=221.7.92.98/24&ecs-override=true
     - https://dns.alidns.com/dns-query#ecs=221.7.92.98/24&ecs-override=true
 
-NodeParam: &NodeParam {type: http, interval: 25200, health-check: {enable: true, url: 'http://wifi.vivo.com.cn/generate_204', interval: 3600, timeout: 2000}}
+# [嗅探设置]
+sniffer:
+  enable: false
+
 # [代理订阅]
+NodeParam: &NodeParam {type: http, interval: 25200, health-check: {enable: true, url: 'http://wifi.vivo.com.cn/generate_204', interval: 3600, timeout: 2000}}
 proxy-providers:
   cloud:
     <<: *NodeParam
@@ -74,10 +71,12 @@ proxy-providers:
     path: ./provide/cloud.yaml
     override:
       skip-cert-verify: true
+# [代理组] 没有订阅时需删除
+proxy-groups:
+  - {name: Bypass, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
 
+# [自建节点]
 proxies:
-  - name: "DNS_Hijack"
-    type: dns
   - name: "home-direct"
     type: vmess
     server: 地址
@@ -95,14 +94,6 @@ proxies:
       path: 
       headers:
         Host: 混淆地址
-      max-early-data:
-      early-data-header-name:
-      v2ray-http-upgrade: false
-      v2ray-http-upgrade-fast-open: false
-
-proxy-groups:
-  - {name: Bypass, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
 
 rules:
-  - DST-PORT,53, DNS_Hijack
-  - MATCH, Bypass
+  - MATCH, DIRECT
