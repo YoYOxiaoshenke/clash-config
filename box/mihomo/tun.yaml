@@ -10,7 +10,7 @@ allow-lan: true           # 允许LAN
 tcp-concurrent: true      # TCP并发
 unified-delay: true       # 统一延迟
 ipv6: true                # 启用IPv6
-find-process-mode: strict # 进程匹配模式
+find-process-mode: always # 进程匹配模式
 mode: global              # 运行模式
 log-level: silent         # 日志级别 silent/error/warning/info/debug
 keep-alive-interval: 1800 # 解决iOS设备耗电问题
@@ -72,7 +72,7 @@ proxy-groups:
 
 # [自建节点]
 proxies:
-  - name: "home-direct"
+  - name: "home-proxy"
     type: vmess
     server: 地址
     port: 端口
@@ -95,4 +95,4 @@ proxies:
       v2ray-http-upgrade-fast-open: false
 
 rules:
-  - MATCH, DIRECT
+  - MATCH, home-proxy

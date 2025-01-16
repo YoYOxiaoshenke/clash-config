@@ -78,7 +78,7 @@ proxy-groups:
 
 # [自建节点]
 proxies:
-  - name: "home-direct"
+  - name: "home-proxy"
     type: vmess
     server: 地址
     port: 端口
@@ -97,4 +97,4 @@ proxies:
         Host: 混淆地址
 
 rules:
-  - MATCH, DIRECT
+  - MATCH, home-proxy
