@@ -1,0 +1,67 @@
+{
+    "log": {
+      "disabled": false,
+      "level": "info",
+      "output": "sing-box.log",
+      "timestamp": true
+    },
+
+    "dns": {
+      "servers": [
+        { "tag": "local", "address": "223.6.6.6"},
+        { "tag": "dns_direct", "address": [ "https://doh.pub/dns-query", "https://dns.alidns.com/dns-query" ], "address_resolver": "local"}
+      ],
+      "rules": [
+        { "action": "route", "outbound": "any", "server": "local" }
+      ],
+      "final": "dns_direct",
+      "strategy": "prefer_ipv4",
+      "client_subnet": "221.7.92.98",
+      "reverse_mapping": true,
+      "independent_cache": false
+    },
+    
+    "inbounds": [
+     {
+       "type": "tun",
+       "tag": "tun-in",
+       "interface_name": "tun0",
+       "address": [ "172.18.0.1/30", "fdfe:dcba:9876::1/126" ],
+       "stack": "mixed",
+       "auto_route": true,
+       "auto_redirect": false,
+       "strict_route": true
+     }
+    ],
+
+    "outbounds": [
+      {
+        "type": "vmess",
+        "tag": "home-proxy",
+        "server": "ip域名",
+        "server_port": 1080,
+        "uuid": "填写uuid",
+        "security": "auto",
+        "alter_id": 0,
+        "packet_encoding": "xudp",
+        "transport": {
+            "type": "ws",
+            "path": "",
+            "headers": {
+              "Host": "混淆地址"
+            }
+          }
+      }
+    ],
+
+    "route": {
+      "rules": [
+        { "sniffer": ["dns"], "action": "sniff" },
+        { "protocol": "dns", "action": "hijack-dns" }
+      ],
+      "auto_detect_interface": true,
+      "override_android_vpn": true,
+      "final": "home-proxy"
+    }
+
+}
