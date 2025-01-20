@@ -24,8 +24,7 @@
       }
     ],
     "final": "dns_DOH",
-    "strategy": "prefer_ipv4",
-    "client_subnet": "221.7.92.98",
+    "strategy": "prefer_ipv4", // 删掉IPv6测试
     "reverse_mapping": true,
     "independent_cache": false
   },
@@ -38,7 +37,7 @@
         "172.18.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
-      "stack": "mixed",
+      "stack": "system", // 游戏测试
       "auto_route": true,
       "auto_redirect": false,
       "strict_route": true
@@ -57,10 +56,9 @@
       "uuid": "填入uuid",
       "security": "auto",
       "alter_id": 0,
-      "packet_encoding": "xudp",
+      "packet_encoding": "xudp", // 测试 packetaddr 游戏延迟
       "transport": {
         "type": "ws",
-        "path": "",
         "headers": {
           "Host": "混淆地址"
         }
@@ -94,12 +92,16 @@
     "final": "select"
   },
   "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "store_rdrc": true
+    },
     "clash_api": {
+      "secret": "123456",
+      "external_ui": "xd",
       "external_controller": "0.0.0.0:9090",
-      "external_ui": "ui",
       "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "select",
-      "secret": "123456"
+      "external_ui_download_detour": "select"
     }
   }
 }
