@@ -24,22 +24,17 @@
       }
     ],
     "final": "dns_DOH",
-    "strategy": "prefer_ipv4", // 删掉IPv6测试
-    "reverse_mapping": true,
-    "independent_cache": false
+    "reverse_mapping": true
   },
   "inbounds": [
     {
       "type": "tun",
-      "tag": "tun-in",
-      "interface_name": "tun0",
       "address": [
         "172.18.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
-      "stack": "system", // 游戏测试
+      "stack": "system",
       "auto_route": true,
-      "auto_redirect": false,
       "strict_route": true
     }
   ],
@@ -56,7 +51,7 @@
       "uuid": "填入uuid",
       "security": "auto",
       "alter_id": 0,
-      "packet_encoding": "xudp", // 测试 packetaddr 游戏延迟
+      "packet_encoding": "xudp",
       "transport": {
         "type": "ws",
         "headers": {
@@ -88,7 +83,6 @@
       }
     ],
     "auto_detect_interface": true,
-    "override_android_vpn": true,
     "final": "select"
   },
   "experimental": {
