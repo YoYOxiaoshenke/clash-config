@@ -7,7 +7,7 @@
     "servers": [
       {
         "tag": "local",
-        "address": "223.6.6.6",
+        "address": "运营商DNS服务器",
         "detour": "direct-out"
       },
       {
@@ -24,7 +24,8 @@
       }
     ],
     "final": "dns_DOH",
-    "reverse_mapping": true
+    "reverse_mapping": true,
+    "client_subnet": "运营商DNS服务器"
   },
   "inbounds": [
     {
@@ -49,7 +50,7 @@
       "server": "服务器地址",
       "server_port": 1080,
       "uuid": "填入uuid",
-      "security": "auto",
+      "security": "aes-128-gcm 没有aes解码能力选 chacha20-poly1305",
       "alter_id": 0,
       "packet_encoding": "xudp",
       "transport": {
@@ -83,6 +84,7 @@
       }
     ],
     "auto_detect_interface": true,
+    "override_android_vpn": true,
     "final": "select"
   },
   "experimental": {
