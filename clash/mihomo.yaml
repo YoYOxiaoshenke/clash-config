@@ -44,11 +44,8 @@ dns:
   listen: 0.0.0.0:1053
   ipv6: true
   enhanced-mode: redir-host
-  default-nameserver:
-    - 223.6.6.6
   nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
+    - https://223.6.6.6/dns-query#h3=true
   direct-nameserver:
     - system
 
@@ -82,18 +79,19 @@ FilterJP: &FilterJP '^(?=.*((?i)日本|川日|东京|大阪|泉日|埼玉|(\b(JP
 FilterSG: &FilterSG '^(?=.*((?i)新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
 FilterUS: &FilterUS '^(?=.*((?i)美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
 # 功能性
-NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 1800, timeout: 2000}}
+NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: false, url: 'http://latency-test.skk.moe/endpoint', interval: 600, timeout: 2000}}
 Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
-UrlTest: &UrlTest {type: url-test, interval: 300, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+UrlTest: &UrlTest {type: url-test, interval: 600, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 25200, format: text, proxy: DIRECT}
 RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 25200, format: text, proxy: DIRECT}
 RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 25200, format: text, proxy: DIRECT}
 
-# [代理订阅]
+# [代理集合]
 proxy-providers:
   provider1:
     <<: *NodeParam
     url: "订阅链接"
+    filter: "包含节点"
     exclude-filter: "排除节点"
     path: ./airport/provider1.yaml
     override:
@@ -101,7 +99,7 @@ proxy-providers:
       skip-cert-verify: true
       additional-prefix: "[前缀]"
 
-# [策略组]
+# [代理组]
 proxy-groups:
   - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
   - {name: AI, type: select, proxies: [时延优选策略组-美国, 策略组-美国, 策略组-日本, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
