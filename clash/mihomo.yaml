@@ -129,14 +129,14 @@ proxy-groups:
 
 # [本地规则]
 rules:
-  - DOMAIN-SUFFIX,koyso.com,DIRECT
+  - DOMAIN-SUFFIX,koyso.com, DIRECT
+  - DOMAIN-SUFFIX,emby.wtf, 微软&下载&emby
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
   - RULE-SET,stream_non_ip, 国际媒体
   - RULE-SET,telegram_non_ip, Telegram
   - RULE-SET,apple_cdn, DIRECT
-  - RULE-SET,emby, 微软&下载&emby
   - RULE-SET,download_domainset, 微软&下载&emby
   - RULE-SET,download_non_ip, 微软&下载&emby
   - RULE-SET,microsoft_cdn_non_ip, 微软&下载&emby
@@ -159,11 +159,6 @@ rules:
 
 # [远程规则]
 rule-providers:
-  # emby
-  emby:
-    <<: *RuleSet_classical
-    url: https://raw.githubusercontent.com/Repcz/Tool/refs/heads/X/Loon/Rules/Emby.list
-    path: ./sukkaw_ruleset/emby.txt
   # CDN加速（速度快延迟低，大部分流量）
   cdn_domainset:
     <<: *RuleSet_domain
