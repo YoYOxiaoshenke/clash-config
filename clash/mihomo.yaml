@@ -5,8 +5,7 @@ mixed-port: 8897                  # MIXED  端口 http+socks
 redir-port: 8898                  # REDIR  端口
 tproxy-port: 8899                 # TPROXY 端口
 authentication:                   # http(s)/socks/mixed代理的用户验证
-  - "user1:pass1"
-  - "user2:pass2"
+  - "user1:pass1"                 # mihomo暴露公网必须填写！
 
 # [通用设置]
 allow-lan: true                   # 允许LAN
@@ -22,7 +21,7 @@ global-client-fingerprint: safari # 全局TLS指纹
 # [面板设置]
 secret: 123456
 external-ui: ui
-external-ui-name: xd # 保存文件夹：./ui/xd/
+external-ui-name: xd # ./ui/xd/
 external-controller: 127.0.0.1:9090
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
@@ -103,7 +102,7 @@ proxy-providers:
     override:
       udp: true
       skip-cert-verify: true
-      additional-prefix: "[前缀]"
+      additional-prefix: "[前缀 ]"
 
 # [代理组]
 proxy-groups:
@@ -131,6 +130,8 @@ proxy-groups:
 rules:
   - DOMAIN-SUFFIX,koyso.com, DIRECT
   - DOMAIN-SUFFIX,emby.wtf, 微软&下载&emby
+  - DOMAIN-SUFFIX,emby.moe, 微软&下载&emby
+  - DOMAIN-SUFFIX,cdn.bgp.yt, 微软&下载&emby
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
