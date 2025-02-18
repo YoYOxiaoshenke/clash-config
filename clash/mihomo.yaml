@@ -12,7 +12,7 @@ allow-lan: true                   # 允许LAN
 mode: rule                        # 运行模式 rule/global/direct
 log-level: silent                 # 日志级别 silent/error/warning/info
 ipv6: true                        # 启用IPv6
-keep-alive-interval: 1800         # 解决iOS设备耗电问题
+keep-alive-interval: 600          # TCP Keep Alive 包的间隔，单位为秒
 find-process-mode: strict         # 进程匹配模式 always/strict/off
 unified-delay: false              # 减去RTT延迟
 tcp-concurrent: true              # TCP并发
@@ -70,7 +70,7 @@ sniffer:
       ports: [443, 8443]
   skip-domain:
     - Mijia Cloud
-    - +.apple.com
+    - +.push.apple.com
 
 # [锚点集合]
 ImgHK: &ImgHK 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
