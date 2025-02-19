@@ -130,7 +130,7 @@ proxy-groups:
 rules:
   - DOMAIN-SUFFIX,koyso.com, DIRECT
   - DOMAIN-SUFFIX,emby.wtf, 微软&下载&emby
-  - DOMAIN-SUFFIX,emby.moe, 微软&下载&emby
+  - DOMAIN-SUFFIX,9521732.xyz, 微软&下载&emby
   - DOMAIN-SUFFIX,cdn.bgp.yt, 微软&下载&emby
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
