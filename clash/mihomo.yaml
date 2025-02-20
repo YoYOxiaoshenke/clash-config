@@ -111,7 +111,7 @@ proxy-groups:
   - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
   - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
   - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: 微软&下载&emby, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: Emby, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
   - {name: 手动选择, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
   # 地区分类
   - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
@@ -129,21 +129,21 @@ proxy-groups:
 # [本地规则]
 rules:
   - DOMAIN-SUFFIX,koyso.com, DIRECT
-  - DOMAIN-SUFFIX,emby.wtf, 微软&下载&emby
-  - DOMAIN-SUFFIX,9521732.xyz, 微软&下载&emby
-  - DOMAIN-SUFFIX,cdn.bgp.yt, 微软&下载&emby
+  - DOMAIN-SUFFIX,emby.wtf, Emby
+  - DOMAIN-SUFFIX,9521732.xyz, Emby
+  - DOMAIN-SUFFIX,cdn.bgp.yt, Emby
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
   - RULE-SET,stream_non_ip, 国际媒体
   - RULE-SET,telegram_non_ip, Telegram
   - RULE-SET,apple_cdn, DIRECT
-  - RULE-SET,download_domainset, 微软&下载&emby
-  - RULE-SET,download_non_ip, 微软&下载&emby
-  - RULE-SET,microsoft_cdn_non_ip, 微软&下载&emby
+  - RULE-SET,microsoft_cdn_non_ip, DIRECT
+  - RULE-SET,download_domainset, DIRECT
+  - RULE-SET,download_non_ip, DIRECT
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,DIRECT
-  - RULE-SET,microsoft_non_ip, 微软&下载&emby
+  - RULE-SET,microsoft_non_ip, DIRECT
   - RULE-SET,ai_non_ip, AI
   - RULE-SET,global_non_ip, Bypass
   - RULE-SET,domestic_non_ip,DIRECT
@@ -152,7 +152,6 @@ rules:
   ### IP 类规则
   - RULE-SET,telegram_ip, Telegram
   - RULE-SET,stream_ip, 国际媒体
-  - RULE-SET,domestic_ip,DIRECT
   - RULE-SET,lan_ip,DIRECT
   - RULE-SET,china_ip,DIRECT
   - RULE-SET,china_ip_ipv6,DIRECT
@@ -248,10 +247,6 @@ rule-providers:
     url: https://ruleset.skk.moe/Clash/non_ip/global.txt
     path: ./sukkaw_ruleset/global_non_ip.txt
   # 国内ip
-  domestic_ip:
-    <<: *RuleSet_classical
-    url: https://ruleset.skk.moe/Clash/ip/domestic.txt
-    path: ./sukkaw_ruleset/domestic_ip.txt
   china_ip:
     <<: *RuleSet_ipcidr
     url: https://ruleset.skk.moe/Clash/ip/china_ip.txt
