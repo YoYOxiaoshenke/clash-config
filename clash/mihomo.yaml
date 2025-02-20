@@ -73,23 +73,12 @@ sniffer:
     - +.push.apple.com
 
 # [锚点集合]
-ImgHK: &ImgHK 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/HK.png'
-ImgTW: &ImgTW 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'
-ImgJP: &ImgJP 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png'
-ImgSG: &ImgSG 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'
-ImgUS: &ImgUS 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'
-FilterHK: &FilterHK '^(?=.*((?i)香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterTW: &FilterTW '^(?=.*((?i)台湾|(\b(TW|Tai|Taiwan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterJP: &FilterJP '^(?=.*((?i)日本|川日|东京|大阪|泉日|埼玉|(\b(JP|Japan)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterSG: &FilterSG '^(?=.*((?i)新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-FilterUS: &FilterUS '^(?=.*((?i)美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|(\b(GAME)\b))).*$'
-# 功能性
 NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 600, timeout: 2000}}
-Select: &Select {type: select, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, hidden: false, include-all: true}
-UrlTest: &UrlTest {type: url-test, interval: 600, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
-RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 25200, format: text, proxy: DIRECT}
-RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 25200, format: text, proxy: DIRECT}
-RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 25200, format: text, proxy: DIRECT}
+UrlTest: &UrlTest {type: url-test, interval: 60, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+FallBack: &FallBack {type: fallback, interval: 300, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 86400, format: text, proxy: DIRECT}
+RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 86400, format: text, proxy: DIRECT}
+RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 86400, format: text, proxy: DIRECT}
 
 # [代理集合]
 proxy-providers:
@@ -106,25 +95,18 @@ proxy-providers:
 
 # [代理组]
 proxy-groups:
-  - {name: Bypass, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SS.png'}
-  - {name: AI, type: select, proxies: [时延优选策略组-美国, 策略组-美国, 策略组-日本, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
-  - {name: Telegram, type: select, proxies: [时延优选策略组-新国, 策略组-新国, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png'}
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 策略组-台湾, 策略组-香港, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: Emby, type: select, proxies: [DIRECT, 策略组-台湾, 策略组-香港, 策略组-日本, 策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
-  - {name: 手动选择, type: select, include-all-providers: true, icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
-  # 地区分类
-  - {name: 策略组-香港, <<: *Select, filter: *FilterHK, icon: *ImgHK}
-  - {name: 策略组-台湾, <<: *Select, filter: *FilterTW, icon: *ImgTW}
-  - {name: 策略组-日本, <<: *Select, filter: *FilterJP, icon: *ImgJP}
-  - {name: 策略组-新国, <<: *Select, filter: *FilterSG, icon: *ImgSG}
-  - {name: 策略组-美国, <<: *Select, filter: *FilterUS, icon: *ImgUS}
-  # 自动选择-已隐藏
-  - {name: 时延优选策略组-香港, <<: *UrlTest, filter: *FilterHK}
-  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: *FilterTW}
-  - {name: 时延优选策略组-日本, <<: *UrlTest, filter: *FilterJP}
-  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: *FilterSG}
-  - {name: 时延优选策略组-美国, <<: *UrlTest, filter: *FilterUS}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-台湾, 时延优选策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: 手动选择, type: select, include-all-providers: true, exclude-filter: "SakuraCat", icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
+  - {name: 故障转移策略组-台湾, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
+  - {name: 故障转移策略组-AI, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  # 自动选择
+  - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
+  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
+  - {name: 时延优选策略组-澳洲, <<: *UrlTest, filter: '^(?=.*澳洲).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/AU.png'}
+  - {name: 时延优选策略组-美国家宽, <<: *UrlTest, filter: '^(?=.*随机家庭).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'}
+  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: '^(?=.*新加坡)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'}
 
 # [本地规则]
 rules:
@@ -136,7 +118,7 @@ rules:
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
   - RULE-SET,stream_non_ip, 国际媒体
-  - RULE-SET,telegram_non_ip, Telegram
+  - RULE-SET,telegram_non_ip, 时延优选策略组-新国
   - RULE-SET,apple_cdn, DIRECT
   - RULE-SET,microsoft_cdn_non_ip, DIRECT
   - RULE-SET,download_domainset, DIRECT
@@ -144,18 +126,18 @@ rules:
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,DIRECT
   - RULE-SET,microsoft_non_ip, DIRECT
-  - RULE-SET,ai_non_ip, AI
-  - RULE-SET,global_non_ip, Bypass
+  - RULE-SET,ai_non_ip, 故障转移策略组-AI
+  - RULE-SET,global_non_ip, 故障转移策略组-台湾
   - RULE-SET,domestic_non_ip,DIRECT
   - RULE-SET,direct_non_ip,DIRECT
   - RULE-SET,lan_non_ip,DIRECT
   ### IP 类规则
-  - RULE-SET,telegram_ip, Telegram
+  - RULE-SET,telegram_ip, 时延优选策略组-新国
   - RULE-SET,stream_ip, 国际媒体
   - RULE-SET,lan_ip,DIRECT
   - RULE-SET,china_ip,DIRECT
   - RULE-SET,china_ip_ipv6,DIRECT
-  - MATCH, Bypass
+  - MATCH, 故障转移策略组-台湾
 
 # [远程规则]
 rule-providers:
