@@ -50,7 +50,8 @@ dns:
   ipv6: true
   enhanced-mode: redir-host
   nameserver:
-    - https://223.6.6.6/dns-query#h3=true
+    #- https://223.6.6.6/dns-query#h3=true
+    - https://101.101.101.101/dns-query#ecs=221.7.92.98/24
   direct-nameserver:
     - system
 
@@ -73,35 +74,45 @@ sniffer:
     - +.push.apple.com
 
 # [锚点集合]
-NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://latency-test.skk.moe/endpoint', interval: 600, timeout: 2000}}
-UrlTest: &UrlTest {type: url-test, interval: 60, tolerance: 50, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
-FallBack: &FallBack {type: fallback, interval: 300, lazy: true, url: 'http://latency-test.skk.moe/endpoint', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
+NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://www.v2ex.com/generate_204', interval: 600, timeout: 2000}}
+UrlTest: &UrlTest {type: url-test, interval: 30, tolerance: 30, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
+FallBack: &FallBack {type: fallback, interval: 30, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
 RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 86400, format: text, proxy: DIRECT}
 RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 86400, format: text, proxy: DIRECT}
 RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 86400, format: text, proxy: DIRECT}
 
 # [代理集合]
 proxy-providers:
-  provider1:
+  SakuraCat:
     <<: *NodeParam
-    url: "订阅链接"
-    filter: "包含节点"
-    exclude-filter: "排除节点"
-    path: ./airport/provider1.yaml
+    url: ""
+    exclude-filter: "中转"
+    path: ./airport/SakuraCat.yaml
     override:
       udp: true
       skip-cert-verify: true
-      additional-prefix: "[前缀 ]"
+      additional-prefix: "[SakuraCat ]"
+
+  XFLASH:
+    <<: *NodeParam
+    url: ""
+    exclude-filter: "1.0"
+    path: ./airport/XFLASH.yaml
+    override:
+      udp: true
+      skip-cert-verify: true
+      additional-prefix: "[XFLASH ]"
 
 # [代理组]
 proxy-groups:
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-台湾, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-台湾, 时延优选策略组-新国, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: CDN, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
+  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
   - {name: 手动选择, type: select, include-all-providers: true, exclude-filter: "SakuraCat", icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
   - {name: 故障转移策略组-台湾, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
   - {name: 故障转移策略组-AI, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
   # 自动选择
+  - {name: 时延优选策略组-低倍, <<: *UrlTest, filter: '^(?=.*x 0.).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/KR.png'}
   - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
   - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
   - {name: 时延优选策略组-澳洲, <<: *UrlTest, filter: '^(?=.*澳洲).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/AU.png'}
@@ -112,7 +123,7 @@ proxy-groups:
 rules:
   - DOMAIN-SUFFIX,koyso.com, DIRECT
   - DOMAIN-SUFFIX,emby.wtf, Emby
-  - DOMAIN-SUFFIX,9521732.xyz, Emby
+  - DOMAIN-SUFFIX,9521732.xyz, CDN
   - DOMAIN-SUFFIX,cdn.bgp.yt, Emby
   ### 非 IP 类规则
   - RULE-SET,cdn_domainset, CDN
