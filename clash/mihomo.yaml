@@ -105,19 +105,19 @@ proxy-providers:
 
 # [代理组]
 proxy-groups:
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Streaming.png'}
+  - {name: 国际媒体, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/YouTube.png'}
   - {name: CDN, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Emby.png'}
-  - {name: 手动选择, type: select, include-all-providers: true, exclude-filter: "SakuraCat", icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Static.png'}
-  - {name: 故障转移策略组-台湾, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
-  - {name: 故障转移策略组-AI, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/Ark.png'}
+  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/Emby-02.png'}
+  - {name: 手动选择, type: select, include-all-providers: true, exclude-filter: "SakuraCat", icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Select.png'}
+  - {name: 故障转移策略组-台湾, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/FAULT-TW.png'}
+  - {name: 故障转移策略组-AI, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/ChatGPT.png'}
   # 自动选择
-  - {name: 时延优选策略组-低倍, <<: *UrlTest, filter: '^(?=.*x 0.).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/KR.png'}
-  - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
-  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/TW.png'}
+  - {name: 时延优选策略组-低倍, <<: *UrlTest, filter: '^(?=.*x 0.).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-KR.png'}
+  - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-TW.png'}
+  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-TW.png'}
   - {name: 时延优选策略组-澳洲, <<: *UrlTest, filter: '^(?=.*澳洲).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/AU.png'}
-  - {name: 时延优选策略组-美国家宽, <<: *UrlTest, filter: '^(?=.*随机家庭).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png'}
-  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: '^(?=.*新加坡)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png'}
+  - {name: 时延优选策略组-美国家宽, <<: *UrlTest, filter: '^(?=.*随机家庭).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-US.png'}
+  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: '^(?=.*新加坡)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-SG.png'}
 
 # [本地规则]
 rules:
