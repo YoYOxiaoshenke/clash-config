@@ -40,7 +40,7 @@ tun:
   dns-hijack:
     - any:53
     - tcp://any:53
-  device: utun0
+  device: utun0 # 防火墙放行: sudo ufw allow out on utun0
   strict-route: true
 
 # [DNS设置]
