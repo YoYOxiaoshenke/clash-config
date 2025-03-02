@@ -1,0 +1,288 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "dns_DOH",
+        "client_subnet": "运营商DNS服务器",
+        "address": "https://8.8.8.8/dns-query"
+      },
+      {
+        "tag": "local",
+        "address": "运营商DNS服务器",
+        "detour": "direct-out"
+      }
+    ],
+    "rules": [
+      {
+        "action": "route",
+        "outbound": "any",
+        "server": "local"
+      }
+    ],
+    "final": "dns_DOH",
+    "strategy": "ipv4_only"
+  },
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "::",
+      "listen_port": 5353
+    },
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.18.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "stack": "system",
+      "auto_route": true,
+      "auto_redirect": true,
+      "strict_route": true
+    },
+    {
+      "type": "vmess",
+      "tag": "vmess-in",
+      "listen": "::",
+      "listen_port": 5353,
+      "users": [
+        {
+          "name": "sekai",
+          "uuid": "bf000d23-0752-40b4-affe-68f7707a9661",
+          "alterId": 0
+        }
+      ],
+      "transport": {
+        "type": "ws"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct-out",
+      "type": "direct"
+    },
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "direct-out"
+      ],
+      "default": "direct-out",
+      "interrupt_exist_connections": true
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "rule_set": [
+          "apple_cdn",
+          "apple_services",
+          "apple_cn_non_ip",
+          "microsoft_cdn_non_ip",
+          "microsoft_non_ip",
+          "download_domainset",
+          "download_non_ip",
+          "lan_non_ip",
+          "lan_ip",
+          "domestic_non_ip",
+          "direct_non_ip",
+          "china_ip",
+          "china_ip_ipv6"
+        ],
+        "action": "route",
+        "outbound": "direct-out"
+      },
+      {
+        "rule_set": [
+          "cdn_domainset",
+          "cdn_domainset",
+          "stream_non_ip",
+          "stream_ip",
+          "telegram_non_ip",
+          "telegram_ip",
+          "ai_non_ip",
+          "global_non_ip"
+        ],
+        "action": "route",
+        "outbound": ""
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "cdn_domainset",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/domainset/cdn.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "cdn_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/cdn.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "stream_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/stream.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "stream_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/ip/stream.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "telegram_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/telegram.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "telegram_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/ip/telegram.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "ai_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/ai.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "apple_cdn",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/domainset/apple_cdn.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "apple_services",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/apple_services.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "apple_cn_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/apple_cn.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "microsoft_cdn_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/microsoft_cdn.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "microsoft_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/microsoft.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "download_domainset",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/domainset/download.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "download_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/download.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "lan_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/lan.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "lan_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/ip/lan.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "domestic_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/domestic.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "direct_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/direct.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "global_non_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/non_ip/global.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "china_ip",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/ip/china_ip.json",
+        "download_detour": "direct-out"
+      },
+      {
+        "tag": "china_ip_ipv6",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ruleset.skk.moe/sing-box/ip/china_ip_ipv6.json",
+        "download_detour": "direct-out"
+      }
+    ],
+    "auto_detect_interface": true,
+    "final": "Proxy"
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "store_rdrc": true
+    },
+    "clash_api": {
+      "secret": "123456",
+      "external_ui": "xd",
+      "external_controller": "0.0.0.0:9090",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "select"
+    }
+  }
+}

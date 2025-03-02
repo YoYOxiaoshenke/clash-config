@@ -122,6 +122,7 @@ proxy-groups:
 # [本地规则]
 rules:
   - DOMAIN-SUFFIX,koyso.com, DIRECT
+  - DOMAIN-SUFFIX,makifx.com, DIRECT
   - DOMAIN-SUFFIX,emby.wtf, Emby
   - DOMAIN-SUFFIX,9521732.xyz, CDN
   - DOMAIN-SUFFIX,cdn.bgp.yt, Emby
