@@ -6,9 +6,14 @@
   "dns": {
     "servers": [
       {
-        "tag": "dns_DOH",
+        "tag": "google",
         "client_subnet": "运营商DNS服务器",
         "address": "https://8.8.8.8/dns-query"
+      },
+      {
+        "tag": "ali",
+        "address": "https://223.6.6.6/dns-query",
+        "detour": "direct-out"
       },
       {
         "tag": "local",
@@ -20,10 +25,30 @@
       {
         "action": "route",
         "outbound": "any",
+        "server": "ali",
+        "disable_cache": true
+      },
+      {
+        "query_type": "HTTPS",
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "apple_cdn",
+          "apple_services",
+          "apple_cn_non_ip",
+          "microsoft_cdn_non_ip",
+          "microsoft_non_ip",
+          "download_domainset",
+          "download_non_ip",
+          "domestic_non_ip",
+          "direct_non_ip"
+        ],
+        "action": "route",
         "server": "local"
       }
     ],
-    "final": "dns_DOH",
+    "final": "google",
     "strategy": "ipv4_only"
   },
   "inbounds": [
@@ -64,27 +89,141 @@
   ],
   "outbounds": [
     {
-      "tag": "direct-out",
-      "type": "direct"
-    },
-    {
-      "tag": "Proxy",
+      "tag": "Streaming",
       "type": "selector",
       "outbounds": [
-        "direct-out"
-      ],
-      "default": "direct-out",
-      "interrupt_exist_connections": true
+        "lower-auto",
+        "all"
+      ]
+    },
+    {
+      "tag": "CDN",
+      "type": "selector",
+      "outbounds": [
+        "lower-auto",
+        "all"
+      ]
+    },
+    {
+      "tag": "Emby",
+      "type": "selector",
+      "outbounds": [
+        "direct-out",
+        "lower-auto",
+        "all"
+      ]
+    },
+    {
+      "tag": "tw-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "sg-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "ai-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "lower-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "all",
+      "type": "selector",
+      "outbounds": []
+    },
+    {
+      "tag": "direct-out",
+      "type": "direct"
     }
   ],
   "route": {
     "rules": [
+      {
+        "rule_set": [
+          "cdn_domainset",
+          "cdn_non_ip"
+        ],
+        "action": "route",
+        "outbound": "CDN"
+      },
+      {
+        "rule_set": [
+          "stream_non_ip",
+          "stream_ip"
+        ],
+        "action": "route",
+        "outbound": "Streaming"
+      },
+      {
+        "rule_set": [
+          "telegram_non_ip",
+          "telegram_ip"
+        ],
+        "action": "route",
+        "outbound": "sg-auto"
+      },
+      {
+        "rule_set": [
+          "ai_non_ip"
+        ],
+        "action": "route",
+        "outbound": "ai-auto"
+      },
+      {
+        "rule_set": [
+          "global_non_ip"
+        ],
+        "action": "route",
+        "outbound": "tw-auto"
+      },
       {
         "action": "sniff"
       },
       {
         "protocol": "dns",
         "action": "hijack-dns"
+      },
+      {
+        "domain_suffix": [
+          "9521732.xyz"
+        ],
+        "action": "route",
+        "outbound": "CDN"
+      },
+      {
+        "domain_suffix": [
+          "emby.wtf",
+          "cdn.bgp.yt"
+        ],
+        "action": "route",
+        "outbound": "Emby"
+      },
+      {
+        "domain_suffix": [
+          "koyso.com",
+          "makifx.com"
+        ],
+        "action": "route",
+        "outbound": "direct-out"
       },
       {
         "rule_set": [
@@ -95,29 +234,15 @@
           "microsoft_non_ip",
           "download_domainset",
           "download_non_ip",
-          "lan_non_ip",
-          "lan_ip",
           "domestic_non_ip",
           "direct_non_ip",
+          "lan_non_ip",
+          "lan_ip",
           "china_ip",
           "china_ip_ipv6"
         ],
         "action": "route",
         "outbound": "direct-out"
-      },
-      {
-        "rule_set": [
-          "cdn_domainset",
-          "cdn_domainset",
-          "stream_non_ip",
-          "stream_ip",
-          "telegram_non_ip",
-          "telegram_ip",
-          "ai_non_ip",
-          "global_non_ip"
-        ],
-        "action": "route",
-        "outbound": ""
       }
     ],
     "rule_set": [
@@ -270,19 +395,18 @@
       }
     ],
     "auto_detect_interface": true,
-    "final": "Proxy"
+    "final": "tw-auto"
   },
   "experimental": {
     "cache_file": {
-      "enabled": true,
-      "store_rdrc": true
+      "enabled": true
     },
     "clash_api": {
       "secret": "123456",
       "external_ui": "xd",
       "external_controller": "0.0.0.0:9090",
       "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "select"
+      "external_ui_download_detour": "CDN"
     }
   }
 }
