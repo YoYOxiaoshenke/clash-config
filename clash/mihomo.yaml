@@ -50,8 +50,7 @@ dns:
   ipv6: true
   enhanced-mode: redir-host
   nameserver:
-    #- https://223.6.6.6/dns-query#h3=true
-    - https://101.101.101.101/dns-query#ecs=221.7.92.98/24
+    - https://223.6.6.6/dns-query#h3=true
   direct-nameserver:
     - system
 
@@ -75,7 +74,7 @@ sniffer:
 
 # [锚点集合]
 NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://www.v2ex.com/generate_204', interval: 600, timeout: 2000}}
-UrlTest: &UrlTest {type: url-test, interval: 30, tolerance: 30, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
+UrlTest: &UrlTest {type: url-test, interval: 30, tolerance: 50, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
 FallBack: &FallBack {type: fallback, interval: 30, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
 RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 86400, format: text, proxy: DIRECT}
 RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 86400, format: text, proxy: DIRECT}
@@ -86,9 +85,11 @@ proxy-providers:
   SakuraCat:
     <<: *NodeParam
     url: ""
-    exclude-filter: "中转"
+    filter: "((?=.*台湾)(?=.*(进阶IEPL|家宽))|(?=.*新加坡)(?=.*IEPL)|澳洲|随机家庭)"
     path: ./airport/SakuraCat.yaml
     override:
+      tfo: true
+      mptcp: true
       udp: true
       skip-cert-verify: true
       additional-prefix: "[SakuraCat ]"
@@ -96,12 +97,26 @@ proxy-providers:
   XFLASH:
     <<: *NodeParam
     url: ""
-    exclude-filter: "1.0"
+    exclude-filter: "香港"
     path: ./airport/XFLASH.yaml
     override:
+      tfo: true
+      mptcp: true
       udp: true
       skip-cert-verify: true
       additional-prefix: "[XFLASH ]"
+
+  BaiPiao:
+    <<: *NodeParam
+    url: ""
+    exclude-filter: "到期|剩余|每月|免流|ipv6"
+    path: ./airport/BaiPiao.yaml
+    override:
+      tfo: true
+      mptcp: true
+      udp: true
+      skip-cert-verify: true
+      additional-prefix: "[Bai ]"
 
 # [代理组]
 proxy-groups:
