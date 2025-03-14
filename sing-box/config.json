@@ -215,7 +215,8 @@
       },
       {
         "rule_set": [
-          "stream_non_ip"
+          "stream_non_ip",
+          "stream_ip"
         ],
         "action": "route",
         "outbound": "Streaming"
@@ -251,13 +252,6 @@
       },
       {
         "action": "resolve"
-      },
-      {
-        "rule_set": [
-          "stream_ip"
-        ],
-        "action": "route",
-        "outbound": "Streaming"
       },
       {
         "rule_set": [
