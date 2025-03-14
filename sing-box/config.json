@@ -1,6 +1,6 @@
 {
   "log": {
-    "level": "info",
+    "level": "debug",
     "timestamp": true
   },
   "dns": {
@@ -25,12 +25,7 @@
       {
         "action": "route",
         "outbound": "any",
-        "server": "ali",
-        "disable_cache": true
-      },
-      {
-        "query_type": "HTTPS",
-        "action": "reject"
+        "server": "ali"
       },
       {
         "rule_set": [
@@ -48,8 +43,7 @@
         "server": "local"
       }
     ],
-    "final": "google",
-    "strategy": "ipv4_only"
+    "final": "google"
   },
   "inbounds": [
     {
@@ -67,8 +61,7 @@
       ],
       "stack": "system",
       "auto_route": true,
-      "auto_redirect": true,
-      "strict_route": true
+      "auto_redirect": true
     },
     {
       "type": "vmess",
@@ -89,11 +82,48 @@
   ],
   "outbounds": [
     {
+      "tag": "tw-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "http://www.v2ex.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "sg-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "http://www.v2ex.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "ai-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "http://www.v2ex.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "lower-auto",
+      "type": "urltest",
+      "outbounds": [],
+      "url": "http://www.v2ex.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "tag": "select",
+      "type": "selector",
+      "outbounds": []
+    },
+    {
       "tag": "Streaming",
       "type": "selector",
       "outbounds": [
         "lower-auto",
-        "all"
+        "select"
       ]
     },
     {
@@ -101,7 +131,7 @@
       "type": "selector",
       "outbounds": [
         "lower-auto",
-        "all"
+        "select"
       ]
     },
     {
@@ -110,45 +140,8 @@
       "outbounds": [
         "direct-out",
         "lower-auto",
-        "all"
+        "select"
       ]
-    },
-    {
-      "tag": "tw-auto",
-      "type": "urltest",
-      "outbounds": [],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "tag": "sg-auto",
-      "type": "urltest",
-      "outbounds": [],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "tag": "ai-auto",
-      "type": "urltest",
-      "outbounds": [],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "tag": "lower-auto",
-      "type": "urltest",
-      "outbounds": [],
-      "url": "https://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "tag": "all",
-      "type": "selector",
-      "outbounds": []
     },
     {
       "tag": "direct-out",
@@ -159,47 +152,26 @@
     "rules": [
       {
         "rule_set": [
-          "cdn_domainset",
-          "cdn_non_ip"
+          "lan_non_ip",
+          "lan_ip"
         ],
         "action": "route",
-        "outbound": "CDN"
-      },
-      {
-        "rule_set": [
-          "stream_non_ip",
-          "stream_ip"
-        ],
-        "action": "route",
-        "outbound": "Streaming"
-      },
-      {
-        "rule_set": [
-          "telegram_non_ip",
-          "telegram_ip"
-        ],
-        "action": "route",
-        "outbound": "sg-auto"
-      },
-      {
-        "rule_set": [
-          "ai_non_ip"
-        ],
-        "action": "route",
-        "outbound": "ai-auto"
-      },
-      {
-        "rule_set": [
-          "global_non_ip"
-        ],
-        "action": "route",
-        "outbound": "tw-auto"
+        "outbound": "direct-out"
       },
       {
         "action": "sniff"
       },
       {
-        "protocol": "dns",
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "port": 53
+          },
+          {
+            "protocol": "dns"
+          }
+        ],
         "action": "hijack-dns"
       },
       {
@@ -227,6 +199,43 @@
       },
       {
         "rule_set": [
+          "cdn_domainset",
+          "cdn_non_ip"
+        ],
+        "action": "route",
+        "outbound": "CDN"
+      },
+      {
+        "rule_set": [
+          "telegram_ip",
+          "telegram_non_ip"
+        ],
+        "action": "route",
+        "outbound": "sg-auto"
+      },
+      {
+        "rule_set": [
+          "stream_non_ip"
+        ],
+        "action": "route",
+        "outbound": "Streaming"
+      },
+      {
+        "rule_set": [
+          "ai_non_ip"
+        ],
+        "action": "route",
+        "outbound": "ai-auto"
+      },
+      {
+        "rule_set": [
+          "global_non_ip"
+        ],
+        "action": "route",
+        "outbound": "tw-auto"
+      },
+      {
+        "rule_set": [
           "apple_cdn",
           "apple_services",
           "apple_cn_non_ip",
@@ -235,9 +244,23 @@
           "download_domainset",
           "download_non_ip",
           "domestic_non_ip",
-          "direct_non_ip",
-          "lan_non_ip",
-          "lan_ip",
+          "direct_non_ip"
+        ],
+        "action": "route",
+        "outbound": "direct-out"
+      },
+      {
+        "action": "resolve"
+      },
+      {
+        "rule_set": [
+          "stream_ip"
+        ],
+        "action": "route",
+        "outbound": "Streaming"
+      },
+      {
+        "rule_set": [
           "china_ip",
           "china_ip_ipv6"
         ],
@@ -403,10 +426,7 @@
     },
     "clash_api": {
       "secret": "123456",
-      "external_ui": "xd",
-      "external_controller": "0.0.0.0:9090",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "CDN"
+      "external_controller": "0.0.0.0:9090"
     }
   }
 }

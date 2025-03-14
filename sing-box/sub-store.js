@@ -26,14 +26,14 @@ config.outbounds.push(...proxies)
 
 // 遍历配置中的每个出口，根据出口 tag 添加对应的代理标签
 config.outbounds.map(i => {
-  if (['all'].includes(i.tag)) {
+  if (['select'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies, /^(?!.*SakuraCat).*$/i))
   }
   if (['tw-auto'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies, /^(?=.*台湾)(?=.*(进阶IEPL|家宽)).*$/i))
   }
   if (['sg-auto'].includes(i.tag)) {
-    i.outbounds.push(...getTags(proxies, /^(?=.*新加坡)(?=.*IEPL).*$/i))
+    i.outbounds.push(...getTags(proxies, /^(?=.*新加坡)(?=.*进阶IEPL).*$/i))
   }
   if (['ai-auto'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies, /澳洲|随机家庭/i))
