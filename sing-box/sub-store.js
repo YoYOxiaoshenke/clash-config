@@ -33,7 +33,7 @@ config.outbounds.map(i => {
     i.outbounds.push(...getTags(proxies, /^(?=.*台湾)(?=.*(进阶IEPL|家宽)).*$/i))
   }
   if (['sg-auto'].includes(i.tag)) {
-    i.outbounds.push(...getTags(proxies, /^(?=.*新加坡)(?=.*进阶IEPL).*$/i))
+    i.outbounds.push(...getTags(proxies, /^(?=.*新加坡)(?=.*IEPL).*$/i))
   }
   if (['ai-auto'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies, /澳洲|随机家庭/i))
