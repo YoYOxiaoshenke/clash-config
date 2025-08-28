@@ -20,10 +20,10 @@ global-client-fingerprint: safari # 全局TLS指纹
 
 # [面板设置]
 secret: 123456
-external-ui: ui
-external-ui-name: xd # ./ui/xd/
-external-controller: 127.0.0.1:9090
-external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+external-controller: 0.0.0.0:9090
+#external-ui: ui
+#external-ui-name: xd # ./ui/xd/
+#external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 
 # [缓存设置]
 profile:
@@ -32,8 +32,8 @@ profile:
 
 # [TUN设置]
 tun:
-  enable: false
-  stack: system # system/gvisor/mixed
+  enable: true
+  stack: mixed # system/gvisor/mixed
   auto-route: true
   auto-redirect: true # Android中需要使用:https://github.com/Mygod/VPNHotspot/releases
   auto-detect-interface: true
@@ -50,7 +50,7 @@ dns:
   ipv6: true
   enhanced-mode: redir-host
   nameserver:
-    - https://223.6.6.6/dns-query#h3=true
+    - https://223.6.6.6/dns-query
   direct-nameserver:
     - system
 
@@ -73,9 +73,9 @@ sniffer:
     - +.push.apple.com
 
 # [锚点集合]
-NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://www.v2ex.com/generate_204', interval: 600, timeout: 2000}}
-UrlTest: &UrlTest {type: url-test, interval: 30, tolerance: 50, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
-FallBack: &FallBack {type: fallback, interval: 30, lazy: true, url: 'http://www.v2ex.com/generate_204', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
+NodeParam: &NodeParam {type: http, interval: 3600, proxy: DIRECT, health-check: {enable: true, url: 'http://www.apple.com/library/test/success.html', interval: 10, timeout: 2000}}
+UrlTest: &UrlTest {type: url-test, interval: 10, tolerance: 30, lazy: true, url: 'http://www.apple.com/library/test/success.html', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
+FallBack: &FallBack {type: fallback, interval: 10, lazy: true, url: 'http://www.apple.com/library/test/success.html', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: false, include-all-providers: true}
 RuleSet_domain: &RuleSet_domain {type: http, behavior: domain, interval: 86400, format: text, proxy: DIRECT}
 RuleSet_ipcidr: &RuleSet_ipcidr {type: http, behavior: ipcidr, interval: 86400, format: text, proxy: DIRECT}
 RuleSet_classical: &RuleSet_classical {type: http, behavior: classical, interval: 86400, format: text, proxy: DIRECT}
@@ -85,7 +85,6 @@ proxy-providers:
   SakuraCat:
     <<: *NodeParam
     url: ""
-    filter: "((?=.*台湾)(?=.*(进阶IEPL|家宽))|(?=.*新加坡)(?=.*IEPL)|澳洲|随机家庭)"
     path: ./airport/SakuraCat.yaml
     override:
       tfo: true
@@ -97,7 +96,6 @@ proxy-providers:
   XFLASH:
     <<: *NodeParam
     url: ""
-    exclude-filter: "香港"
     path: ./airport/XFLASH.yaml
     override:
       tfo: true
@@ -106,46 +104,35 @@ proxy-providers:
       skip-cert-verify: true
       additional-prefix: "[XFLASH ]"
 
-  BaiPiao:
-    <<: *NodeParam
-    url: ""
-    exclude-filter: "到期|剩余|每月|免流|ipv6"
-    path: ./airport/BaiPiao.yaml
-    override:
-      tfo: true
-      mptcp: true
-      udp: true
-      skip-cert-verify: true
-      additional-prefix: "[Bai ]"
-
 # [代理组]
 proxy-groups:
-  - {name: 国际媒体, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/YouTube.png'}
-  - {name: CDN, type: select, proxies: [时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/ASN.png'}
-  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-低倍, 手动选择], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/Emby-02.png'}
-  - {name: 手动选择, type: select, include-all-providers: true, exclude-filter: "SakuraCat", icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Select.png'}
-  - {name: 故障转移策略组-台湾, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/FAULT-TW.png'}
-  - {name: 故障转移策略组-AI, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽], icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/ChatGPT.png'}
+  - {name: 手动选择, type: select, include-all-providers: true}
+  - {name: Emby, type: select, proxies: [DIRECT, 时延优选策略组-低倍, 手动选择]}
+  - {name: 默认兜底, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾家宽, 时延优选策略组-台湾, 时延优选策略组-低倍, 手动选择]}
+  - {name: 国际媒体, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾, 时延优选策略组-低倍, 手动选择]}
+  - {name: 人工智能, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-澳洲, 时延优选策略组-美国家宽, 手动选择]}
+  - {name: CDN, <<: *FallBack, include-all-providers: false, proxies: [时延优选策略组-台湾, 时延优选策略组-低倍, 手动选择]}
   # 自动选择
-  - {name: 时延优选策略组-低倍, <<: *UrlTest, filter: '^(?=.*x 0.).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-KR.png'}
-  - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-TW.png'}
-  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-TW.png'}
-  - {name: 时延优选策略组-澳洲, <<: *UrlTest, filter: '^(?=.*澳洲).*$', icon: 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/AU.png'}
-  - {name: 时延优选策略组-美国家宽, <<: *UrlTest, filter: '^(?=.*随机家庭).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-US.png'}
-  - {name: 时延优选策略组-新国, <<: *UrlTest, filter: '^(?=.*新加坡)(?=.*进阶IEPL).*$', icon: 'https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Urltest-SG.png'}
+  - {name: Telegram, <<: *UrlTest, filter: '^(?=.*新加坡)(?=.*(进阶IEPL|新加坡\s¹\sx\s1\.0)).*$'}
+  - {name: 时延优选策略组-低倍, <<: *UrlTest, filter: '^(?=.*x 0.).*$'}
+  - {name: 时延优选策略组-台湾家宽, <<: *UrlTest, filter: '^(?=.*台湾)(?=.*家宽).*$'}
+  - {name: 时延优选策略组-台湾, <<: *UrlTest, filter: '^(?!.*家宽)(?=.*台湾)(?=.*IEPL).*$'}
+  - {name: 时延优选策略组-澳洲, <<: *UrlTest, filter: '^(?=.*澳洲).*$'}
+  - {name: 时延优选策略组-美国家宽, <<: *UrlTest, filter: '^(?=.*随机家庭).*$'}
 
 # [本地规则]
 rules:
-  - DOMAIN-SUFFIX,koyso.com, DIRECT
+  - DOMAIN-KEYWORD,koyso, DIRECT
   - DOMAIN-SUFFIX,makifx.com, DIRECT
   - DOMAIN-SUFFIX,emby.wtf, Emby
-  - DOMAIN-SUFFIX,9521732.xyz, CDN
   - DOMAIN-SUFFIX,cdn.bgp.yt, Emby
   ### 非 IP 类规则
+  - RULE-SET,speedtest, 手动选择
   - RULE-SET,cdn_domainset, CDN
   - RULE-SET,cdn_non_ip, CDN
+  - RULE-SET,ai_non_ip, 人工智能
   - RULE-SET,stream_non_ip, 国际媒体
-  - RULE-SET,telegram_non_ip, 时延优选策略组-新国
+  - RULE-SET,telegram_non_ip, Telegram
   - RULE-SET,apple_cdn, DIRECT
   - RULE-SET,microsoft_cdn_non_ip, DIRECT
   - RULE-SET,download_domainset, DIRECT
@@ -153,21 +140,24 @@ rules:
   - RULE-SET,apple_cn_non_ip,DIRECT
   - RULE-SET,apple_services,DIRECT
   - RULE-SET,microsoft_non_ip, DIRECT
-  - RULE-SET,ai_non_ip, 故障转移策略组-AI
-  - RULE-SET,global_non_ip, 故障转移策略组-台湾
+  - RULE-SET,global_non_ip, 默认兜底
   - RULE-SET,domestic_non_ip,DIRECT
   - RULE-SET,direct_non_ip,DIRECT
   - RULE-SET,lan_non_ip,DIRECT
   ### IP 类规则
-  - RULE-SET,telegram_ip, 时延优选策略组-新国
+  - RULE-SET,telegram_ip, Telegram
   - RULE-SET,stream_ip, 国际媒体
   - RULE-SET,lan_ip,DIRECT
   - RULE-SET,china_ip,DIRECT
   - RULE-SET,china_ip_ipv6,DIRECT
-  - MATCH, 故障转移策略组-台湾
+  - MATCH, 默认兜底
 
 # [远程规则]
 rule-providers:
+  speedtest:
+    <<: *RuleSet_domain
+    url: https://ruleset.skk.moe/Clash/domainset/speedtest.txt
+    path: ./sukkaw_ruleset/speedtest.txt
   # CDN加速（速度快延迟低，大部分流量）
   cdn_domainset:
     <<: *RuleSet_domain
